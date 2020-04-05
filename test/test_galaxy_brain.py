@@ -109,8 +109,6 @@ class TestAParserCombineA2Parser(unittest.TestCase):
         # There is no proper way to do this yet, so for now
         # just manually stack parsers
 
-        from pudb import set_trace; set_trace()
-
         a1_result = a_parser(self.inp_strings[3], idx=0)
         print('A1(%s)     : %s' % (str(self.inp_strings[3]), str(a1_result)))
         a2_result = a2_parser(self.inp_strings[3], a1_result)
