@@ -16,10 +16,10 @@ class TestAParser(unittest.TestCase):
         self.inp_strings = ["", "a", "ab", "acegi", "aaaa", "x"]
         self.exp_outputs = [
             common.ParseResult(),
-            common.ParseResult(self.inp_strings[1][1:], 1),
-            common.ParseResult(self.inp_strings[2][1:], 1),
-            common.ParseResult(self.inp_strings[3][1:], 1),
-            common.ParseResult(self.inp_strings[4][1:], 1),
+            common.ParseResult(1, self.inp_strings[1][0], ),
+            common.ParseResult(1, self.inp_strings[2][0], ),
+            common.ParseResult(1, self.inp_strings[3][0], ),
+            common.ParseResult(1, self.inp_strings[4][0], ),
             common.ParseResult()
         ]
 
@@ -28,14 +28,13 @@ class TestAParser(unittest.TestCase):
 
         parser_outputs = []
         for i in self.inp_strings:
-            parser_outputs.append(parser(None, i, 0))
+            parser_outputs.append(parser(i, idx=0))
 
         # display
         for n, o in enumerate(parser_outputs):
             print('Input %d [%s] produced : %s' % (n, self.inp_strings[n], str(o)))
 
         self.assertEqual(len(parser_outputs), len(self.exp_outputs))
-
         for exp_out, test_out in zip(self.exp_outputs, parser_outputs):
             self.assertEqual(exp_out, test_out)
 
@@ -47,26 +46,28 @@ class TestA2Parser(unittest.TestCase):
     def test_parse(self) -> None:
         inp_strings = ["", "a", "aa", "aaa", "aaaa"]
         exp_outputs = [common.ParseResult() for _ in range(len(inp_strings))]
-        exp_outputs[1].add(inp_strings[1:], 1)
-        exp_outputs[2].add(inp_strings[1:], 1)
-        exp_outputs[2].add(inp_strings[2:], 2)
-        exp_outputs[3].add(inp_strings[1:], 1)
-        exp_outputs[3].add(inp_strings[2:], 2)
-        exp_outputs[4].add(inp_strings[1:], 1)
-        exp_outputs[4].add(inp_strings[2:], 2)
+        exp_outputs[1].add(1, inp_strings[1][0])
+        exp_outputs[2].add(1, inp_strings[2][0])
+        exp_outputs[2].add(2, inp_strings[2][0:2])
+        exp_outputs[3].add(1, inp_strings[3][0])
+        exp_outputs[3].add(2, inp_strings[3][0:2])
+        exp_outputs[4].add(1, inp_strings[4][0])
+        exp_outputs[4].add(2, inp_strings[4][0:2])
+
+        #for n, inp in enumerate(inp_strings):
+        #    print('Input %d [%s] expects output \n\t%s' % (n, str(inp), str(exp_outputs[n])))
 
         parser = galaxy_brain.A2Parser()
 
         parser_outputs = []
         for i in inp_strings:
-            parser_outputs.append(parser(None, i, 0))
+            parser_outputs.append(parser(i, idx=0))
 
         # display
         for n, o in enumerate(parser_outputs):
             print('Input %d [%s] produced : %s' % (n, inp_strings[n], str(o)))
 
         self.assertEqual(len(parser_outputs), len(exp_outputs))
-
         for n, (exp_out, test_out) in enumerate(zip(exp_outputs, parser_outputs)):
             print(n, exp_out, test_out)
             self.assertEqual(exp_out, test_out)
@@ -82,7 +83,7 @@ class TestA2Parser(unittest.TestCase):
         for offset in (0, 1, 2):
             out_this_offset = []
             for i in inp_strings:
-                out_this_offset.append(parser(None, i, offset))
+                out_this_offset.append(parser(i, idx=0))
             parser_outputs.append(out_this_offset)
 
         # display

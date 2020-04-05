@@ -12,6 +12,9 @@ Stefan Wong 2020
 from typing import Set
 from parsercom import common
 
+# debug
+#from pudb import set_trace; set_trace()
+
 
 # Match a single 'a'
 class AParser:
@@ -21,10 +24,13 @@ class AParser:
     def __repr__(self) -> str:
         return 'AParser'
 
-    def __call__(self, pr:common.ParseResult=None, inp:str="", idx:int=0) -> common.ParseResult:
+    def __call__(self, inp:str, parse_inp:common.ParseResult=None, idx:int=0) -> common.ParseResult:
+        if parse_inp is not None:
+            idx = parse_inp.last_idx()
+
         parse_result = common.ParseResult()
         if idx < len(inp) and inp[idx] == self.target:
-            parse_result.add(inp[1:], idx+1)
+            parse_result.add(idx+1, inp[idx])
 
         return parse_result
 
@@ -37,17 +43,27 @@ class A2Parser:
     def __repr__(self) -> str:
         return 'A2Parser'
 
-    def __call__(self, pr:common.ParseResult=None, inp:str="", idx:int=0) -> common.ParseResult:
-        parse_out = common.ParseResult()
-        if idx < len(inp) and inp[idx] == self.target:
-            parse_out.add(inp[1:], idx + 1)
+    def __call__(self, inp:str, parse_inp:common.ParseResult=None, idx:int=0) -> common.ParseResult:
+        if parse_inp is not None:
+            idx = parse_inp.last_idx()
 
-        if idx + 1 < len(inp) and inp[idx+1] == self.target:
-            parse_out.add(inp[2:], idx + 2)
+        parse_out = common.ParseResult()
+        if idx >= len(inp):
+            return parse_out
+
+        if inp[idx] == self.target:
+            parse_out.add(idx + 1, inp[idx])
+
+        if (idx + 1) >= len(inp):
+            return parse_out
+
+        if inp[idx] == self.target and inp[idx+1] == self.target:
+            parse_out.add(idx + 2, inp[idx:idx+2])
 
         return parse_out
 
 
+# Match a single 'b'
 class BParser:
     def __init__(self) -> None:
         self.target = 'b'
@@ -55,9 +71,9 @@ class BParser:
     def __repr__(self) -> str:
         return 'BParser'
 
-    def __call__(self, pr:common.ParseResult=None, inp:str="", idx:int=0) -> common.ParseResult:
+    def __call__(self, inp:str, parse_inp:common.ParseResult=None, idx:int=0) -> common.ParseResult:
         parse_result = common.ParseResult()
         if idx <= len(inp) and inp[idx] == self.target:
-            parse_result.add(inp[1:], idx+1)
+            parse_result.add(idx+1, inp[idx])
 
         return parse_result
