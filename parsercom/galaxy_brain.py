@@ -9,7 +9,9 @@ start there?
 Stefan Wong 2020
 """
 
-from typing import List
+from typing import Set
+from parsercom import common
+
 
 # Match a single 'a'
 class AParser:
@@ -19,14 +21,12 @@ class AParser:
     def __repr__(self) -> str:
         return 'AParser'
 
-    def __call__(self, inp:str, idx:int) -> List[int]:
-        if len(inp) == 0:
-            return []
+    def __call__(self, pr:common.ParseResult=None, inp:str="", idx:int=0) -> common.ParseResult:
+        parse_result = common.ParseResult()
+        if idx < len(inp) and inp[idx] == self.target:
+            parse_result.add(inp[1:], idx+1)
 
-        if idx <= len(inp) and inp[idx] == self.target:
-            return [idx + 1]
-
-        return []
+        return parse_result
 
 
 # Match one or 2 'a's
@@ -37,17 +37,27 @@ class A2Parser:
     def __repr__(self) -> str:
         return 'A2Parser'
 
-    def __call__(self, inp:str, idx:int) -> List[int]:
-        if len(inp) == 0:
-            return []
-
-        # TODO : this looks awkward
-        parse_out = list()
+    def __call__(self, pr:common.ParseResult=None, inp:str="", idx:int=0) -> common.ParseResult:
+        parse_out = common.ParseResult()
         if idx < len(inp) and inp[idx] == self.target:
-            parse_out.append(idx + 1)
+            parse_out.add(inp[1:], idx + 1)
 
         if idx + 1 < len(inp) and inp[idx+1] == self.target:
-            parse_out.append(idx + 2)
+            parse_out.add(inp[2:], idx + 2)
 
         return parse_out
 
+
+class BParser:
+    def __init__(self) -> None:
+        self.target = 'b'
+
+    def __repr__(self) -> str:
+        return 'BParser'
+
+    def __call__(self, pr:common.ParseResult=None, inp:str="", idx:int=0) -> common.ParseResult:
+        parse_result = common.ParseResult()
+        if idx <= len(inp) and inp[idx] == self.target:
+            parse_result.add(inp[1:], idx+1)
+
+        return parse_result
