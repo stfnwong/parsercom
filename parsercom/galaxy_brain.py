@@ -26,11 +26,15 @@ class AParser:
 
     def __call__(self, inp:str, parse_inp:common.ParseResult=None, idx:int=0) -> common.ParseResult:
         if parse_inp is not None:
+            parse_result = parse_inp
             idx = parse_inp.last_idx()
+        else:
+            parse_result = common.ParseResult()
 
-        parse_result = common.ParseResult()
-        if idx < len(inp) and inp[idx] == self.target:
-            parse_result.add(idx+1, inp[idx])
+        if idx >= len(inp):
+            return parse_out
+        if inp[idx] == self.target:
+            parse_out.add(idx + 1, inp[idx])
 
         return parse_result
 
@@ -46,17 +50,19 @@ class A2Parser:
     def __call__(self, inp:str, parse_inp:common.ParseResult=None, idx:int=0) -> common.ParseResult:
         if parse_inp is not None:
             idx = parse_inp.last_idx()
+            parse_out = parse_inp
+        else:
+            parse_out = common.ParseResult()
 
-        parse_out = common.ParseResult()
+        # Try to match one 'a'
         if idx >= len(inp):
             return parse_out
-
         if inp[idx] == self.target:
             parse_out.add(idx + 1, inp[idx])
 
+        # try to match a second 'a'
         if (idx + 1) >= len(inp):
             return parse_out
-
         if inp[idx] == self.target and inp[idx+1] == self.target:
             parse_out.add(idx + 2, inp[idx:idx+2])
 
@@ -72,8 +78,15 @@ class BParser:
         return 'BParser'
 
     def __call__(self, inp:str, parse_inp:common.ParseResult=None, idx:int=0) -> common.ParseResult:
-        parse_result = common.ParseResult()
-        if idx <= len(inp) and inp[idx] == self.target:
+        if parse_inp is not None:
+            parse_result = parse_inp
+        else:
+            parse_result = common.ParseResult()
+
+        # Try to match one 'b'
+        if idx >= len(inp):
+            return parse_result
+        if inp[idx] == self.target:
             parse_result.add(idx+1, inp[idx])
 
         return parse_result

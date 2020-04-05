@@ -95,20 +95,26 @@ class TestA2Parser(unittest.TestCase):
 
 
 
-#class TestAParserCombineA2Parser(unittest.TestCase):
-#    def setUp(self) -> None:
-#        self.inp_strings = ["", "ab", "aa", "aaa", "aaaa"]
-#        #self.exp_outputs = [[], [1], [1], [1], [1], []]
-#
-#    def test_concat(self) -> None:
-#        a_parser  = galaxy_brain.AParser()
-#        b_parser  = galaxy_brain.BParser()
-#        a2_parser = galaxy_brain.A2Parser()
-#
-#        # There is no proper way to do this yet, so for now
-#        # just manually stack parsers
-#
-#        a1 = a_parser(None, self.inp_strings[0], 0)
+
+class TestAParserCombineA2Parser(unittest.TestCase):
+    def setUp(self) -> None:
+        self.inp_strings = ["", "ab", "aa", "aaa", "aaaa"]
+        #self.exp_outputs = [[], [1], [1], [1], [1], []]
+
+    def test_concat(self) -> None:
+        a_parser  = galaxy_brain.AParser()
+        b_parser  = galaxy_brain.BParser()
+        a2_parser = galaxy_brain.A2Parser()
+
+        # There is no proper way to do this yet, so for now
+        # just manually stack parsers
+
+        from pudb import set_trace; set_trace()
+
+        a1_result = a_parser(self.inp_strings[3], idx=0)
+        print('A1(%s)     : %s' % (str(self.inp_strings[3]), str(a1_result)))
+        a2_result = a2_parser(self.inp_strings[3], a1_result)
+        print('A2(A1(%s)) : %s' % (str(self.inp_strings[3]), str(a2_result)))
 
 
 if __name__ == '__main__':

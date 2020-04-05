@@ -26,7 +26,6 @@ NOTES:
 class ParseResult:
     def __init__(self, elem:Any=None, idx:int=0) -> None:
         self.data:List[Tuple[str, int]] = list()
-
         if elem is not None:
             self.add(elem, idx)
 
@@ -60,4 +59,7 @@ class ParseResult:
         self.data.append(new_elem)
 
     def last_idx(self) -> int:
-        return self.data[-1][0]
+        try:
+            return self.data[-1][1]
+        except:
+            return 0
