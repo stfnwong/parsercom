@@ -5,7 +5,6 @@ Grab bag of recurring things. To be refactored.
 Stefan Wong 2020
 """
 
-from typing import Any
 from typing import List
 from typing import Set
 from typing import Tuple
@@ -24,10 +23,10 @@ NOTES:
 """
 # TODO : named tuple?
 class ParseResult:
-    def __init__(self, elem:Any=None, idx:int=0) -> None:
+    def __init__(self, elem:str=None, idx:int=0) -> None:
         self.data:List[Tuple[str, int]] = list()
         if elem is not None:
-            self.add(elem, idx)
+            self.add(idx, elem)
 
     def __repr__(self) -> str:
         return 'ParseResult %s' % str(self.data)
@@ -35,7 +34,7 @@ class ParseResult:
     def __str__(self) -> str:
         return self.__repr__()
 
-    def __eq__(self, other:'ParseResult') -> bool:
+    def __eq__(self, other:object) -> bool:
         if isinstance(other, ParseResult):
             if len(self.data) != len(other.data):
                 return False
