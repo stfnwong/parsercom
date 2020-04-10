@@ -61,7 +61,7 @@ class TestCharParser(unittest.TestCase):
 
         # display
         for n, o in enumerate(parser_outputs):
-            print('parser_c(parser_a(%s, 0))' % self.inp_strings_1[n])
+            print('parser_c(parser_a(\"%s\", 0))' % self.inp_strings_1[n])
             print('Input %d [%s] produced : %s' % (n, self.inp_strings_1[n], str(o)))
 
         self.assertEqual(len(parser_outputs), len(exp_outputs_1))
