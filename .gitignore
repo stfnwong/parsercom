@@ -4,3 +4,6 @@
 
 # Ignore *.pyc
 *.pyc
+
+# Ignore mypy cache dir 
+.mypy_cache/
