@@ -23,7 +23,7 @@ NOTES:
 """
 # TODO : named tuple?
 class ParseResult:
-    def __init__(self, elem:str=None, idx:int=0) -> None:
+    def __init__(self, idx:int=0, elem:str=None) -> None:
         self.data:List[Tuple[str, int]] = list()
         if elem is not None:
             self.add(idx, elem)
@@ -52,13 +52,13 @@ class ParseResult:
 
     def add(self, idx:int=0, elem:str=None) -> None:
         if elem is None:
-            new_elem = ('', idx)
+            new_elem = (idx, '')
         else:
-            new_elem = (elem, idx)
+            new_elem = (idx, elem)
         self.data.append(new_elem)
 
     def last_idx(self) -> int:
         try:
-            return self.data[-1][1]
+            return self.data[-1][0]
         except:
             return 0

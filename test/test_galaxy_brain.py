@@ -16,10 +16,10 @@ class TestAParser(unittest.TestCase):
         self.inp_strings = ["", "a", "ab", "acegi", "aaaa", "x"]
         self.exp_outputs = [
             common.ParseResult(),
-            common.ParseResult(1, self.inp_strings[1][0], ),
-            common.ParseResult(1, self.inp_strings[2][0], ),
-            common.ParseResult(1, self.inp_strings[3][0], ),
-            common.ParseResult(1, self.inp_strings[4][0], ),
+            common.ParseResult(1, self.inp_strings[1][0]),
+            common.ParseResult(1, self.inp_strings[2][0]),
+            common.ParseResult(1, self.inp_strings[3][0]),
+            common.ParseResult(1, self.inp_strings[4][0]),
             common.ParseResult()
         ]
 
