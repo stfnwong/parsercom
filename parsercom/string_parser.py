@@ -10,7 +10,6 @@ Stefan Wong 2020
 from parsercom import common
 
 
-
 class StringParser:
     def __init__(self, target_str:str) -> None:
         self.target_str = target_str
@@ -23,32 +22,39 @@ class StringParser:
         return self.__repr__()
 
     def __call__(self, inp:str, parse_inp:common.ParseResult=None, idx:int=0) -> common.ParseResult:
+
         if parse_inp is not None:
             idx = parse_inp.last_idx()
+            start_idx = parse_inp.last_idx()
             parse_result = parse_inp
         else:
             parse_result = common.ParseResult()
+            start_idx = 0
 
         if idx >= len(inp):
             return parse_result
 
-        # try to match sentence, moving over sep chars?
-        for n, c in enumerate(self.target_str):
-            # NOTE: moving over sep chars isn't strictly what we want to do,
-            # because that is really the domain of tokenization.
-            if inp[idx + n] in self.sep_chars:
-                continue
-
-            if c != inp[idx + n]:
+        target_idx = 0
+        while (target_idx + idx) < len(inp):
+            if target_idx >= len(self.target_str):
                 return parse_result
 
-        # if there are still more characters in the input then
-        # don't adjust the parse output
-        if len(inp) > (idx + n + 1):
-            if inp[idx + n + 1] not in self.sep_chars:
+            #print('target_idx : %d, idx : %d len(inp) : %d' % (target_idx, idx, len(inp)))
+
+            # eat seperator chars
+            #if inp[target_idx + idx] in self.sep_chars:
+            #    return parse_result
+
+            if self.target_str[target_idx] != inp[target_idx + idx]:
                 return parse_result
 
-        # TODO : why am I adding two here?
-        parse_result.add(idx + n + 1, inp[idx : idx+n+1])
+            idx += 1
+            target_idx += 1
+
+        #if len(inp) > (target_idx + idx):
+        #    if inp[idx + target_idx + 1] not in self.sep_chars:
+        #        return parse_result
+
+        parse_result.add(idx + target_idx, inp[start_idx : start_idx + target_idx + 1])
 
         return parse_result
