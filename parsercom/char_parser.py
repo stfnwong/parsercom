@@ -7,10 +7,11 @@ Stefan Wong 2020
 """
 
 from parsercom import common
+from parsercom import parser
 
 
 # Match a single character
-class CharParser:
+class CharParser(parser.Parser):
     def __init__(self, target_char:str) -> None:
         self.target_char = target_char
 

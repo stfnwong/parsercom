@@ -11,13 +11,14 @@ Stefan Wong 2020
 
 from typing import Set
 from parsercom import common
+from parsercom import parser
 
 # debug
 #from pudb import set_trace; set_trace()
 
 
 # Match a single 'a'
-class AParser:
+class AParser(parser.Parser):
     def __init__(self) -> None:
         self.target = 'a'
 
@@ -40,7 +41,7 @@ class AParser:
 
 
 # Match one or 2 'a's
-class A2Parser:
+class A2Parser(parser.Parser):
     def __init__(self) -> None:
         self.target = 'a'
 
@@ -70,7 +71,7 @@ class A2Parser:
 
 
 # Match a single 'b'
-class BParser:
+class BParser(parser.Parser):
     def __init__(self) -> None:
         self.target = 'b'
 
