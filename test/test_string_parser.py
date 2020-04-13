@@ -16,6 +16,7 @@ from parsercom import string_parser
 class TestStringParser(unittest.TestCase):
     def setUp(self) -> None:
         self.inp_strings_1 = ["", "ay", "aylmao", "ay lmao", "ayy lmao", "ayayy", "ayy", "ay ayy"]
+        self.inp_strings_2 = ["", "ay", "ayy", "ayayy", "ayyay"]
 
     def test_parse_string(self) -> None:
         exp_outputs_1 = [
@@ -43,6 +44,34 @@ class TestStringParser(unittest.TestCase):
             self.assertEqual(exp_out, test_out)
 
 
+    def test_parse_combo(self) -> None:
+        exp_outputs_2 = [
+            common.ParseResult(),
+            common.ParseResult(2, "ay"),
+            common.ParseResult(3, "ayy"),
+            common.ParseResult(2, "ay"),        # input is "ayayy"
+            common.ParseResult(3, "ayy")
+        ]
+        exp_outputs_2[3].add(5, "ayy")
+
+        parser_ay  = string_parser.StringParser('ay')
+        parser_ayy = string_parser.StringParser('ayy')
+
+        parser_outputs = []
+        for i in self.inp_strings_2:
+            ay_output = parser_ay(i, idx=0)
+            print('parser_ay(\"%s\", idx=0) : \n\t%s' % (i, str(ay_output)))
+            ayy_output = parser_ayy(i, ay_output)
+            print('parser_ayy(parser_ay(\"%s\", idx=0)) : \n\t%s' % (i, str(ayy_output)))
+            parser_outputs.append(ayy_output)
+
+        # display
+        for n, o in enumerate(parser_outputs):
+            print('[%d] parser_ayy(parser_ay(\"%s\"))' % (n, str(self.inp_strings_2[n])))
+            print('input %d [%s] produced : \n\t%s' % (n, self.inp_strings_2[n], str(o)))
+
+
+
     def test_two_parse_string(self) -> None:
         exp_outputs_1 = [
             common.ParseResult(),
@@ -60,7 +89,9 @@ class TestStringParser(unittest.TestCase):
         parser_outputs = []
         for i in self.inp_strings_1:
             ay_output = parser_ay(i, idx=0)
+            print('parser_ay(\"%s\", idx=0) : %s' % (i, str(ay_output)))
             ayy_output = parser_ayy(i, ay_output)
+            print('parser_ayy(parser_ay(\"%s\", idx=0)) : %s' % (i, str(ayy_output)))
             parser_outputs.append(ayy_output)
 
         # display

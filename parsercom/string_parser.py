@@ -36,25 +36,21 @@ class StringParser:
 
         target_idx = 0
         while (target_idx + idx) < len(inp):
+            print('target_idx : %d, idx : %d len(inp) : %d' % (target_idx, idx, len(inp)))
+
+            # NOTE: putting a break statement here means that the parser will
+            # stop eating characters as soon as it sees its input in the
+            # stream. Its not clear to me yet if this is quite the behaviour I
+            # want...
             if target_idx >= len(self.target_str):
+                #break
                 return parse_result
-
-            #print('target_idx : %d, idx : %d len(inp) : %d' % (target_idx, idx, len(inp)))
-
-            # eat seperator chars
-            #if inp[target_idx + idx] in self.sep_chars:
-            #    return parse_result
 
             if self.target_str[target_idx] != inp[target_idx + idx]:
                 return parse_result
 
-            idx += 1
             target_idx += 1
 
-        #if len(inp) > (target_idx + idx):
-        #    if inp[idx + target_idx + 1] not in self.sep_chars:
-        #        return parse_result
-
-        parse_result.add(idx + target_idx, inp[start_idx : start_idx + target_idx + 1])
+        parse_result.add(idx + target_idx, inp[start_idx : start_idx + target_idx])
 
         return parse_result
