@@ -7,8 +7,7 @@ Stefan Wong 2020
 
 import unittest
 # units under test
-from parsercom import common
-from parsercom import char_parser
+from parsercom import parser
 
 
 class TestCharParser(unittest.TestCase):
@@ -27,7 +26,7 @@ class TestCharParser(unittest.TestCase):
             common.ParseResult()
         ]
 
-        parser = char_parser.CharParser('a')
+        parser = parser.CharParser('a')
         parser_outputs = []
         for i in self.inp_strings_1:
             parser_outputs.append(parser(i, idx=0))
@@ -51,8 +50,8 @@ class TestCharParser(unittest.TestCase):
         ]
         exp_outputs_1[3].add(2, self.inp_strings_1[3][1])
 
-        parser_a = char_parser.CharParser('a')
-        parser_c = char_parser.CharParser('c')
+        parser_a = parser.CharParser('a')
+        parser_c = parser.CharParser('c')
         parser_outputs = []
         for i in self.inp_strings_1:
             a_output = parser_a(i, idx=0)
@@ -79,9 +78,9 @@ class TestCharParser(unittest.TestCase):
         ]
         exp_outputs_1[3].add(2, self.inp_strings_1[3][1])
 
-        parser_a = char_parser.CharParser('a')
-        parser_c = char_parser.CharParser('c')
-        parser_x = char_parser.CharParser('x')
+        parser_a = parser.CharParser('a')
+        parser_c = parser.CharParser('c')
+        parser_x = parser.CharParser('x')
         parser_outputs = []
         for i in self.inp_strings_1:
             a_output = parser_a(i, idx=0)

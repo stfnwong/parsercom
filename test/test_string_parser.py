@@ -7,8 +7,7 @@ Stefan Wong 2020
 
 import unittest
 # units under test
-from parsercom import common
-from parsercom import string_parser
+from parsercom import parser
 
 #from pudb import set_trace; set_trace()
 
@@ -29,7 +28,7 @@ class TestStringParser(unittest.TestCase):
             common.ParseResult(),
         ]
 
-        parser = string_parser.StringParser('ay')
+        parser = parser.StringParser('ay')
 
         parser_outputs = []
         for i in self.inp_strings_1:
@@ -54,8 +53,8 @@ class TestStringParser(unittest.TestCase):
         ]
         exp_outputs_2[3].add(5, "ayy")
 
-        parser_ay  = string_parser.StringParser('ay')
-        parser_ayy = string_parser.StringParser('ayy')
+        parser_ay  = parser.StringParser('ay')
+        parser_ayy = parser.StringParser('ayy')
 
         parser_outputs = []
         for i in self.inp_strings_2:
@@ -83,8 +82,8 @@ class TestStringParser(unittest.TestCase):
             common.ParseResult(2, "ay"),
         ]
 
-        parser_ay  = string_parser.StringParser('ay')
-        parser_ayy = string_parser.StringParser('ayy')
+        parser_ay  = parser.StringParser('ay')
+        parser_ayy = parser.StringParser('ayy')
 
         parser_outputs = []
         for i in self.inp_strings_1:
@@ -115,9 +114,9 @@ class TestStringParser(unittest.TestCase):
             common.ParseResult(2, "ay"),
         ]
 
-        parser_ay    = string_parser.StringParser('ay')
-        parser_space = string_parser.StringParser(' ')
-        parser_ayy   = string_parser.StringParser('ayy')
+        parser_ay    = parser.StringParser('ay')
+        parser_space = parser.StringParser(' ')
+        parser_ayy   = parser.StringParser('ayy')
 
         parser_outputs = []
         for i in self.inp_strings_1:
