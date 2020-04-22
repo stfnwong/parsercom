@@ -21,7 +21,6 @@ NOTES:
     We want to be able to give ParseResults from previous parsers/steps
     to subsequent parsers/steps and have them continue on in some way.
 """
-# TODO : named tuple?
 class ParseResult:
     def __init__(self, idx:int=0, elem:str=None) -> None:
         self.data:List[Tuple[str, int]] = list()
@@ -39,9 +38,6 @@ class ParseResult:
             if len(self.data) != len(other.data):
                 return False
 
-            # check that all the other combinations are in
-            # the set
-            # TODO : should really be a set and not a list...
             for ours, theirs in zip(self.data, other.data):
                 if ours != theirs:
                     return False
@@ -56,6 +52,9 @@ class ParseResult:
         else:
             new_elem = (idx, elem)
         self.data.append(new_elem)
+
+    def extend(self, result:'ParseResult') -> None:
+        self.data.extend(result.data)
 
     def last_idx(self) -> int:
         try:

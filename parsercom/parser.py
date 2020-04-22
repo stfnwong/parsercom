@@ -80,7 +80,7 @@ class StringParser(Parser):
 
         target_idx = 0
         while (target_idx + idx) < len(inp):
-            print('target_idx : %d, idx : %d len(inp) : %d' % (target_idx, idx, len(inp)))
+            #print('target_idx : %d, idx : %d len(inp) : %d' % (target_idx, idx, len(inp)))
 
             # NOTE: putting a break statement here means that the parser will
             # stop eating characters as soon as it sees its input in the
