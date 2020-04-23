@@ -29,16 +29,38 @@ class TestCombinator(unittest.TestCase):
         print(alt_combo)
         print(alt_result)
 
+
+class TestConcatenation(unittest.TestCase):
+    def setUp(self) -> None:
+        self.inp_strings = ('ab', 'aa', 'aaa', 'aba')
+
     def test_concatenation(self) -> None:
         a_parser = parser.CharParser('a')
         b_parser = parser.CharParser('b')
-
+        # expected results
         ab_combo = combinator.Concatenation(a_parser, b_parser)
-        print(ab_combo)
-        ab_result_1 = ab_combo.parse('ab')
-        ab_result_2 = ab_combo.parse('aa')
 
-        for n, r in enumerate([ab_result_1, ab_result_2]):
+        results = []
+        for inp in self.inp_strings:
+            results.append(ab_combo.parse(inp))
+
+        for n, r in enumerate(results):
+            print(n, r)
+
+
+class TestKleeneStar(unittest.TestCase):
+    def setUp(self) -> None:
+        self.inp_strings = ('a', 'aa', 'aaa', 'aaaa', 'aaabcdefg')
+
+    def test_kleene_star(self) -> None:
+        p = parser.CharParser('a')
+        ks = combinator.KleeneStar(p)
+
+        results = []
+        for inp in self.inp_strings:
+            results.append(ks.parse(inp))
+
+        for n, r in enumerate(results):
             print(n, r)
 
 

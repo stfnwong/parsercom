@@ -7,6 +7,7 @@ Stefan Wong 2020
 
 import unittest
 # units under test
+from parsercom import common
 from parsercom import parser
 
 #from pudb import set_trace; set_trace()
@@ -28,15 +29,15 @@ class TestStringParser(unittest.TestCase):
             common.ParseResult(),
         ]
 
-        parser = parser.StringParser('ay')
+        s_parser = parser.StringParser('ay')
 
         parser_outputs = []
         for i in self.inp_strings_1:
-            parser_outputs.append(parser(i, idx=0))
+            parser_outputs.append(s_parser(i, idx=0))
 
         # display
         for n, o in enumerate(parser_outputs):
-            print('parser(%s) produced : %s' % (self.inp_strings_1[n], str(o)))
+            print('s_parser(%s) produced : %s' % (self.inp_strings_1[n], str(o)))
 
         self.assertEqual(len(parser_outputs), len(exp_outputs_1))
         for exp_out, test_out in zip(exp_outputs_1, parser_outputs):

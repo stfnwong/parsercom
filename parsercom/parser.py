@@ -23,6 +23,25 @@ class Parser:
         raise NotImplementedError('This should be implemented in derived class')
 
 
+class NullParser(Parser):
+    def __repr__(self) -> str:
+        return 'NullParser'
+
+    def __call__(self, inp:str, parse_inp:common.ParseResult=None, idx:int=0) -> common.ParseResult:
+        return common.ParseResult()
+
+
+class EmptyParser(Parser):
+    def __repr__(self) -> str:
+        return 'EmptyParser'
+
+    def __call__(self, inp:str, parse_inp:common.ParseResult=None, idx:int=0) -> common.ParseResult:
+        if parse_inp is not None:
+            return parse_inp
+
+        return common.ParseResult(idx=idx, elem=None)
+
+
 class CharParser(Parser):
     def __init__(self, target_char:str) -> None:
         self.target_char = target_char
@@ -30,16 +49,11 @@ class CharParser(Parser):
     def __repr__(self) -> str:
         return 'CharParser(%s)' % self.target_char
 
-    def __str__(self) -> str:
-        return self.__repr__()
-
     def __call__(self, inp:str, parse_inp:common.ParseResult=None, idx:int=0) -> common.ParseResult:
         if parse_inp is not None:
             idx = parse_inp.last_idx()
-            parse_result = parse_inp
-        else:
-            parse_result = common.ParseResult()
 
+        parse_result = common.ParseResult()
         # Try to match one char
         if idx >= len(inp):
             return parse_result
@@ -62,19 +76,14 @@ class StringParser(Parser):
     def __repr__(self) -> str:
         return 'StringParser(%s)' % self.target_str
 
-    def __str__(self) -> str:
-        return self.__repr__()
-
     def __call__(self, inp:str, parse_inp:common.ParseResult=None, idx:int=0) -> common.ParseResult:
-
         if parse_inp is not None:
             idx = parse_inp.last_idx()
             start_idx = parse_inp.last_idx()
-            parse_result = parse_inp
         else:
-            parse_result = common.ParseResult()
             start_idx = 0
 
+        parse_result = common.ParseResult()
         if idx >= len(inp):
             return parse_result
 
@@ -98,3 +107,6 @@ class StringParser(Parser):
         parse_result.add(idx + target_idx, inp[start_idx : start_idx + target_idx])
 
         return parse_result
+
+    def get_target(self) -> str:
+        return self.target_str

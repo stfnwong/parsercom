@@ -61,3 +61,6 @@ class ParseResult:
             return self.data[-1][0]
         except:
             return 0
+
+    def empty(self) -> bool:
+        return True if len(self.data) == 0 else False
