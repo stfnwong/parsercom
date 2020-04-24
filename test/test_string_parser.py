@@ -12,7 +12,7 @@ from parsercom import parser
 
 class TestStringParser(unittest.TestCase):
     def setUp(self) -> None:
-        self.inp_strings = ["", "ay", "ayy", "ayayy", "ayyay", "by", "byy"]
+        self.inp_strings = ["", "ay", "ayy", "ayayy", "ayyay", "by", "byy", "ayy lmao", "ayylmao"]
 
     def test_parse_strings(self) -> None:
         exp_outputs_2 = [
@@ -23,6 +23,8 @@ class TestStringParser(unittest.TestCase):
             parser.ParseResult(3, "ayy"),
             parser.ParseResult(),
             parser.ParseResult(),
+            parser.ParseResult(3, "ayy"),
+            parser.ParseResult(3, "ayy"),
         ]
 
         s_parser = parser.StringParser('ayy')

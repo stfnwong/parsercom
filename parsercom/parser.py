@@ -130,7 +130,6 @@ class StringParser(Parser):
     """
     def __init__(self, target_str:str) -> None:
         self.target_str = target_str
-        self.sep_chars = (' ', ',')     # TODO : this looks like it could be generalized into a super class..
 
     def __repr__(self) -> str:
         return 'StringParser(%s)' % self.target_str
@@ -146,13 +145,14 @@ class StringParser(Parser):
         if idx >= len(inp):
             return parse_result
 
-        from pudb import set_trace; set_trace()
-
         for target_idx, c in enumerate(inp[idx:]):
             if target_idx >= len(self.target_str):
                 return parse_result
             if self.target_str[target_idx] != c:
                 return parse_result
+            # dont eval the rest of the string if we have partial match
+            if target_idx == len(self.target_str)-1:
+                break
 
         if target_idx < len(self.target_str)-1:
             return parse_result     # didnt match enough chars
