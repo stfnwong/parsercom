@@ -125,6 +125,9 @@ class CharParser(Parser):
 
 
 class StringParser(Parser):
+    """
+    StringParser
+    """
     def __init__(self, target_str:str) -> None:
         self.target_str = target_str
         self.sep_chars = (' ', ',')     # TODO : this looks like it could be generalized into a super class..
@@ -143,24 +146,18 @@ class StringParser(Parser):
         if idx >= len(inp):
             return parse_result
 
-        target_idx = 0
-        while (target_idx + idx) < len(inp):
-            #print('target_idx : %d, idx : %d len(inp) : %d' % (target_idx, idx, len(inp)))
+        from pudb import set_trace; set_trace()
 
-            # NOTE: putting a break statement here means that the parser will
-            # stop eating characters as soon as it sees its input in the
-            # stream. Its not clear to me yet if this is quite the behaviour I
-            # want...
+        for target_idx, c in enumerate(inp[idx:]):
             if target_idx >= len(self.target_str):
-                #break
+                return parse_result
+            if self.target_str[target_idx] != c:
                 return parse_result
 
-            if self.target_str[target_idx] != inp[target_idx + idx]:
-                return parse_result
+        if target_idx < len(self.target_str)-1:
+            return parse_result     # didnt match enough chars
 
-            target_idx += 1
-
-        parse_result.add(idx + target_idx, inp[start_idx : start_idx + target_idx])
+        parse_result.add(idx + target_idx+1, inp[start_idx : start_idx + target_idx+1])
 
         return parse_result
 
