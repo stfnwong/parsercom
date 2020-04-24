@@ -5,7 +5,6 @@ Some combinators
 Stefan Wong 2020
 """
 
-from parsercom import common
 from parsercom import parser
 
 #from pudb import set_trace; set_trace()
@@ -22,16 +21,16 @@ class Combinator:           # TODO : inherit from ABC?
     def __str__(self) -> str:
         return self.__repr__()
 
-    def parse(self) -> common.ParseResult:
+    def parse(self) -> parser.ParseResult:
         raise NotImplementedError('Should be implemented in derived class')
 
 
 
 class Alternation(Combinator):
     def __repr__(self) -> str:
-        return 'Alternation %s|%s' % (repr(self.A), repr(self.B))
+        return 'Alternation <%s|%s>' % (repr(self.A), repr(self.B))
 
-    def parse(self, inp:str, parse_inp:common.ParseResult=None, idx:int=0) -> common.ParseResult:
+    def parse(self, inp:str, parse_inp:parser.ParseResult=None, idx:int=0) -> parser.ParseResult:
         a_result = self.A(inp, parse_inp=parse_inp, idx=idx)
         b_result = self.B(inp, parse_inp=parse_inp, idx=idx)
 
@@ -40,9 +39,9 @@ class Alternation(Combinator):
 
 class Concatenation(Combinator):
     def __repr__(self) -> str:
-        return 'Concatenation %s.%s' % (repr(self.A), repr(self.B))
+        return 'Concatenation <%s.%s>' % (repr(self.A), repr(self.B))
 
-    def parse(self, inp:str, parse_inp:common.ParseResult=None, idx:int=0) -> common.ParseResult:
+    def parse(self, inp:str, parse_inp:parser.ParseResult=None, idx:int=0) -> parser.ParseResult:
         a_result = self.A(inp, parse_inp, idx=idx)
         b_result = self.B(inp, a_result)
 
@@ -54,13 +53,11 @@ class KleeneStar(Combinator):
         self.A = A
 
     def __repr__(self) -> str:
-        return 'KleeneStar %s' % (repr(self.A))
+        return 'KleeneStar <%s>' % (repr(self.A))
 
-    def parse(self, inp:str, parse_inp:common.ParseResult=None, idx:int=0) -> common.ParseResult:
-        empty_result = common.ParseResult(idx=idx, elem='')
+    def parse(self, inp:str, parse_inp:parser.ParseResult=None, idx:int=0) -> parser.ParseResult:
+        empty_result = parser.ParseResult(idx=idx, elem='')
         result = self.A(inp, parse_inp=parse_inp, idx=idx)
-
-        print('result type :', type(result))
 
         if result.empty() is True:
             return empty_result

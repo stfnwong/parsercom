@@ -8,7 +8,6 @@ Stefan Wong 2020
 import unittest
 # unit(s) under test
 from parsercom import combinator
-from parsercom import common
 from parsercom import parser
 
 
@@ -33,17 +32,30 @@ class TestCombinator(unittest.TestCase):
 
 class TestConcatenation(unittest.TestCase):
     def setUp(self) -> None:
-        self.inp_strings = ('ab', 'aa', 'aaa', 'aba')
+        self.inp_strings = ('', 'ab', 'aa', 'aaa', 'aba')
 
     def test_concatenation(self) -> None:
         a_parser = parser.CharParser('a')
         b_parser = parser.CharParser('b')
-        # expected results
         ab_combo = combinator.Concatenation(a_parser, b_parser)
+        # expected outputs
+        exp_outputs = [
+            parser.ParseResult(),           # ''
+            parser.ParseResult(1, 'a'),     # 'a'
+            parser.ParseResult(1, 'a'),     # 'ab'
+            parser.ParseResult(1, 'a'),     # 'aa'
+            parser.ParseResult(1, 'a'),     # 'aaa'
+            parser.ParseResult(1, 'a'),     # 'aba'
+        ]
+        exp_outputs[2].add(2, 'b')
 
         results = []
         for inp in self.inp_strings:
             results.append(ab_combo.parse(inp))
+
+        print('%s results for each string :' % str(ab_combo))
+        for n, r in enumerate(results):
+            print(n, r)
 
         for n, r in enumerate(results):
             print(n, r)
@@ -58,12 +70,12 @@ class TestKleeneStar(unittest.TestCase):
         ks = combinator.KleeneStar(p)
         # expected outputs
         exp_outputs = [
-            common.ParseResult(0, ''),
-            common.ParseResult(0, ''), # 'a'
-            common.ParseResult(0, ''), # 'aa'
-            common.ParseResult(0, ''), # 'aaa'
-            common.ParseResult(0, ''), # 'aaaa'
-            common.ParseResult(0, ''), # 'aaabcdefg'
+            parser.ParseResult(0, ''),
+            parser.ParseResult(0, ''), # 'a'
+            parser.ParseResult(0, ''), # 'aa'
+            parser.ParseResult(0, ''), # 'aaa'
+            parser.ParseResult(0, ''), # 'aaaa'
+            parser.ParseResult(0, ''), # 'aaabcdefg'
         ]
         # 'a'
         exp_outputs[1].add(1, 'a')
@@ -89,7 +101,7 @@ class TestKleeneStar(unittest.TestCase):
         for inp in self.inp_strings:
             results.append(ks.parse(inp))
 
-        print('Parser results for each string :')
+        print('%s results for each string :' % str(ks))
         for n, r in enumerate(results):
             print(n, r)
 

@@ -18,18 +18,18 @@ class TestCharParser(unittest.TestCase):
 
     def test_parse_char(self) -> None:
         exp_outputs_1 = [
-            common.ParseResult(),
-            common.ParseResult(1, self.inp_strings_1[1][0]),
-            common.ParseResult(1, self.inp_strings_1[2][0]),
-            common.ParseResult(1, self.inp_strings_1[3][0]),
-            common.ParseResult(1, self.inp_strings_1[4][0]),
-            common.ParseResult()
+            parser.ParseResult(),
+            parser.ParseResult(1, self.inp_strings_1[1][0]),
+            parser.ParseResult(1, self.inp_strings_1[2][0]),
+            parser.ParseResult(1, self.inp_strings_1[3][0]),
+            parser.ParseResult(1, self.inp_strings_1[4][0]),
+            parser.ParseResult()
         ]
 
-        parser = parser.CharParser('a')
+        cparser = parser.CharParser('a')
         parser_outputs = []
         for i in self.inp_strings_1:
-            parser_outputs.append(parser(i, idx=0))
+            parser_outputs.append(cparser(i, idx=0))
 
         # display
         for n, o in enumerate(parser_outputs):
@@ -41,12 +41,12 @@ class TestCharParser(unittest.TestCase):
 
     def test_parse_two_chars(self) -> None:
         exp_outputs_1 = [
-            common.ParseResult(),
-            common.ParseResult(1, self.inp_strings_1[1][0]),
-            common.ParseResult(1, self.inp_strings_1[2][0]),
-            common.ParseResult(1, self.inp_strings_1[3][0]),
-            common.ParseResult(1, self.inp_strings_1[4][0]),
-            common.ParseResult()
+            parser.ParseResult(),
+            parser.ParseResult(1, self.inp_strings_1[1][0]),
+            parser.ParseResult(1, self.inp_strings_1[2][0]),
+            parser.ParseResult(1, self.inp_strings_1[3][0]),
+            parser.ParseResult(1, self.inp_strings_1[4][0]),
+            parser.ParseResult()
         ]
         exp_outputs_1[3].add(2, self.inp_strings_1[3][1])
 
@@ -69,12 +69,12 @@ class TestCharParser(unittest.TestCase):
 
     def tets_parse_three_chars(self) -> None:
         exp_outputs_1 = [
-            common.ParseResult(),
-            common.ParseResult(1, self.inp_strings_1[1][0]),
-            common.ParseResult(1, self.inp_strings_1[2][0]),
-            common.ParseResult(1, self.inp_strings_1[3][0]),
-            common.ParseResult(1, self.inp_strings_1[4][0]),
-            common.ParseResult(1, self.inp_strings_1[5][0])
+            parser.ParseResult(),
+            parser.ParseResult(1, self.inp_strings_1[1][0]),
+            parser.ParseResult(1, self.inp_strings_1[2][0]),
+            parser.ParseResult(1, self.inp_strings_1[3][0]),
+            parser.ParseResult(1, self.inp_strings_1[4][0]),
+            parser.ParseResult(1, self.inp_strings_1[5][0])
         ]
         exp_outputs_1[3].add(2, self.inp_strings_1[3][1])
 

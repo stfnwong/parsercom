@@ -7,7 +7,7 @@ Stefan Wong 2020
 
 import unittest
 # unit under test
-from parsercom import common
+from parsercom import parser
 from parsercom import galaxy_brain
 
 
@@ -15,12 +15,12 @@ class TestAParser(unittest.TestCase):
     def setUp(self) -> None:
         self.inp_strings = ["", "a", "ab", "acegi", "aaaa", "x"]
         self.exp_outputs = [
-            common.ParseResult(),
-            common.ParseResult(1, self.inp_strings[1][0]),
-            common.ParseResult(1, self.inp_strings[2][0]),
-            common.ParseResult(1, self.inp_strings[3][0]),
-            common.ParseResult(1, self.inp_strings[4][0]),
-            common.ParseResult()
+            parser.ParseResult(),
+            parser.ParseResult(1, self.inp_strings[1][0]),
+            parser.ParseResult(1, self.inp_strings[2][0]),
+            parser.ParseResult(1, self.inp_strings[3][0]),
+            parser.ParseResult(1, self.inp_strings[4][0]),
+            parser.ParseResult()
         ]
 
     def test_parse(self) -> None:
@@ -45,7 +45,7 @@ class TestA2Parser(unittest.TestCase):
 
     def test_parse(self) -> None:
         inp_strings = ["", "a", "aa", "aaa", "aaaa"]
-        exp_outputs = [common.ParseResult() for _ in range(len(inp_strings))]
+        exp_outputs = [parser.ParseResult() for _ in range(len(inp_strings))]
         exp_outputs[1].add(1, inp_strings[1][0])
         exp_outputs[2].add(1, inp_strings[2][0])
         exp_outputs[2].add(2, inp_strings[2][0:2])

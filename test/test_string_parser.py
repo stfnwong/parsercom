@@ -7,7 +7,6 @@ Stefan Wong 2020
 
 import unittest
 # units under test
-from parsercom import common
 from parsercom import parser
 
 #from pudb import set_trace; set_trace()
@@ -20,13 +19,13 @@ class TestStringParser(unittest.TestCase):
 
     def test_parse_string(self) -> None:
         exp_outputs_1 = [
-            common.ParseResult(),
-            common.ParseResult(2, "ay"),
-            common.ParseResult(),
-            common.ParseResult(2, "ay"),
-            common.ParseResult(),
-            common.ParseResult(),
-            common.ParseResult(),
+            parser.ParseResult(),
+            parser.ParseResult(2, "ay"),
+            parser.ParseResult(),
+            parser.ParseResult(2, "ay"),
+            parser.ParseResult(),
+            parser.ParseResult(),
+            parser.ParseResult(),
         ]
 
         s_parser = parser.StringParser('ay')
@@ -46,11 +45,11 @@ class TestStringParser(unittest.TestCase):
 
     def test_parse_combo(self) -> None:
         exp_outputs_2 = [
-            common.ParseResult(),
-            common.ParseResult(2, "ay"),
-            common.ParseResult(3, "ayy"),
-            common.ParseResult(2, "ay"),        # input is "ayayy"
-            common.ParseResult(3, "ayy")
+            parser.ParseResult(),
+            parser.ParseResult(2, "ay"),
+            parser.ParseResult(3, "ayy"),
+            parser.ParseResult(2, "ay"),        # input is "ayayy"
+            parser.ParseResult(3, "ayy")
         ]
         exp_outputs_2[3].add(5, "ayy")
 
@@ -74,13 +73,13 @@ class TestStringParser(unittest.TestCase):
 
     def test_two_parse_string(self) -> None:
         exp_outputs_1 = [
-            common.ParseResult(),
-            common.ParseResult(2, "ay"),
-            common.ParseResult(),
-            common.ParseResult(2, "ay"),
-            common.ParseResult(3, "ayy"),
-            common.ParseResult(),
-            common.ParseResult(2, "ay"),
+            parser.ParseResult(),
+            parser.ParseResult(2, "ay"),
+            parser.ParseResult(),
+            parser.ParseResult(2, "ay"),
+            parser.ParseResult(3, "ayy"),
+            parser.ParseResult(),
+            parser.ParseResult(2, "ay"),
         ]
 
         parser_ay  = parser.StringParser('ay')
@@ -106,13 +105,13 @@ class TestStringParser(unittest.TestCase):
 
     def test_parse_ay_lmao(self) -> None:
         exp_outputs_1 = [
-            common.ParseResult(),
-            common.ParseResult(2, "ay"),
-            common.ParseResult(),
-            common.ParseResult(2, "ay"),
-            common.ParseResult(3, "ayy"),
-            common.ParseResult(),
-            common.ParseResult(2, "ay"),
+            parser.ParseResult(),
+            parser.ParseResult(2, "ay"),
+            parser.ParseResult(),
+            parser.ParseResult(2, "ay"),
+            parser.ParseResult(3, "ayy"),
+            parser.ParseResult(),
+            parser.ParseResult(2, "ay"),
         ]
 
         parser_ay    = parser.StringParser('ay')
