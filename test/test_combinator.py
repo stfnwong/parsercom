@@ -29,7 +29,7 @@ class TestAlternation:
 
 
 class TestConcatenation:
-    inp_strings = ('', 'ab', 'aa', 'aaa', 'aba')
+    inp_strings = ('', 'a', 'ab', 'aa', 'aaa', 'aba')
 
     def test_concatenation(self) -> None:
         a_parser = parser.CharParser('a')
@@ -45,6 +45,7 @@ class TestConcatenation:
             parser.ParseResult(1, 'a'),     # 'aba'
         ]
         exp_outputs[2].add(2, 'b')
+        exp_outputs[5].add(2, 'b')
 
         results = []
         for inp in self.inp_strings:
@@ -54,8 +55,41 @@ class TestConcatenation:
         for n, r in enumerate(results):
             print(n, r)
 
-        for n, r in enumerate(results):
-            print(n, r)
+        assert len(results) == len(exp_outputs)
+
+        for n, (exp, out) in enumerate(zip(exp_outputs, results)):
+            print("[%d / %d] : comparing %s -> %s" % \
+                  (n, len(results), str(exp), str(out))
+            )
+            assert exp == out
+
+    def test_ab_concat_offset(self) -> None:
+        a_parser = parser.CharParser('a')
+        b_parser = parser.CharParser('b')
+        ab_combo = combinator.Concatenation(a_parser, b_parser)
+
+        exp_a_only = parser.ParseResult(1, 'a')
+        exp_b_only = parser.ParseResult(2, 'b')
+
+        a_only = a_parser('ab', idx=0)
+        assert exp_a_only == a_only
+
+        b_only = b_parser('ab', idx=1)
+        assert exp_b_only == b_only
+
+        exp_a_result = parser.ParseResult(1, 'a')
+        exp_ab_result_0 = parser.ParseResult(1, 'a')
+        exp_ab_result_0.add(2, 'b')
+        exp_ab_result_1 = parser.ParseResult()
+
+        a_result = ab_combo.parse('a', idx=0)
+        assert exp_a_result == a_result
+
+        ab_result_0 = ab_combo.parse('ab', idx=0)
+        assert exp_ab_result_0 == ab_result_0
+
+        ab_result_1 = ab_combo.parse('ab', idx=1)
+        assert exp_ab_result_1 == ab_result_1
 
 
 class TestKleeneStar:
