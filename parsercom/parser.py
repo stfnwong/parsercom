@@ -22,7 +22,7 @@ NOTES:
 """
 class ParseResult:
     def __init__(self, idx:int=0, elem:str=None) -> None:
-        self.data:List[Tuple[str, int]] = list()
+        self.data:List[Tuple[int, str]] = list()
         if elem is not None:
             self.add(idx, elem)
 
@@ -105,7 +105,9 @@ class EmptyParser(Parser):
 
     def __call__(self, inp:str, parse_inp:ParseResult=None, idx:int=0) -> ParseResult:
         if parse_inp is not None:
-            return parse_inp.extend(idx, '')
+            parse_out = copy.deepcopy(parse_inp)
+            parse_out.add(idx, '')
+            return parse_out
 
         return ParseResult(idx=idx, elem='')
 

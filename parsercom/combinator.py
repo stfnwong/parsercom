@@ -21,7 +21,7 @@ class Combinator:
     def __str__(self) -> str:
         return self.__repr__()
 
-    def parse(self) -> parser.ParseResult:
+    def parse(self, inp:str, parse_inp:parser.ParseResult=None, idx:int=0) -> parser.ParseResult:
         raise NotImplementedError('Should be implemented in derived class')
 
 
@@ -34,7 +34,9 @@ class Alternation(Combinator):
         a_result = self.A(inp, parse_inp=parse_inp, idx=idx)
         b_result = self.B(inp, parse_inp=parse_inp, idx=idx)
 
-        return b_result.extend(a_result)
+        b_result.extend(a_result)
+
+        return b_result
 
 
 class Concatenation(Combinator):
