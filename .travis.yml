@@ -1,0 +1,12 @@
+language: python
+
+# Worry about Python 3.8 later
+python:
+    - "3.6"
+
+# TODO : flake8/linting, 
+
+script:
+    - python3 tests/test_char_parser.py
+    - python3 tests/test_string_parser.py
+    - python3 tests/test_combinator.py

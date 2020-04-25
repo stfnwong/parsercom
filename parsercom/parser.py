@@ -6,6 +6,8 @@ Base class for parsers
 Stefan Wong 2020
 """
 import copy
+from typing import List
+from typing import Tuple
 
 """
 NOTES:
@@ -67,7 +69,10 @@ class ParseResult:
 
 
 class Parser:
-    def __init__(self, target:str=None, **kwargs) -> None:
+    """
+    Base class for parsers. Provides __call__ signature.
+    """
+    def __init__(self, target:str, **kwargs) -> None:
         self.target = target
 
     def __repr__(self) -> str:
@@ -81,6 +86,9 @@ class Parser:
 
 
 class NullParser(Parser):
+    def __init__(self) -> None:
+        pass
+
     def __repr__(self) -> str:
         return 'NullParser'
 
@@ -89,6 +97,9 @@ class NullParser(Parser):
 
 
 class EmptyParser(Parser):
+    def __init__(self) -> None:
+        pass
+
     def __repr__(self) -> str:
         return 'EmptyParser'
 
