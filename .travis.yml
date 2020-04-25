@@ -7,7 +7,7 @@ python:
 # TODO : flake8/linting, 
 install:
     - pip install --upgrade pip && pip install -r requirements.txt
-    - pip install parsercom
+    - pip install .
 
 script:
     - pytest -vv
