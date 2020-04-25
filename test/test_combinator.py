@@ -5,15 +5,13 @@ Tests of combinator objects
 Stefan Wong 2020
 """
 
-import unittest
 # unit(s) under test
 from parsercom import combinator
 from parsercom import parser
 
 
-class TestAlternation(unittest.TestCase):
-    def setUp(self) -> None:
-        self.inp_string_1 = "boondoggle"
+class TestAlternation:
+    inp_string_1 = "boondoggle"
 
     def test_alternation(self) -> None:
         boo_parser = parser.StringParser('boo')
@@ -30,9 +28,8 @@ class TestAlternation(unittest.TestCase):
         print(alt_result)
 
 
-class TestConcatenation(unittest.TestCase):
-    def setUp(self) -> None:
-        self.inp_strings = ('', 'ab', 'aa', 'aaa', 'aba')
+class TestConcatenation:
+    inp_strings = ('', 'ab', 'aa', 'aaa', 'aba')
 
     def test_concatenation(self) -> None:
         a_parser = parser.CharParser('a')
@@ -61,9 +58,8 @@ class TestConcatenation(unittest.TestCase):
             print(n, r)
 
 
-class TestKleeneStar(unittest.TestCase):
-    def setUp(self) -> None:
-        self.inp_strings = ('', 'a', 'aa', 'aaa', 'aaaa', 'aaabcdefg')
+class TestKleeneStar:
+    inp_strings = ('', 'a', 'aa', 'aaa', 'aaaa', 'aaabcdefg')
 
     def test_kleene_star(self) -> None:
         p = parser.CharParser('a')
@@ -105,13 +101,13 @@ class TestKleeneStar(unittest.TestCase):
         for n, r in enumerate(results):
             print(n, r, repr(ks), self.inp_strings[n])
 
-        self.assertEqual(len(results), len(exp_outputs))
+        assert len(results) == len(exp_outputs)
 
         for n, (exp, out) in enumerate(zip(exp_outputs, results)):
             print("[%d / %d] : comparing %s -> %s" % \
                   (n, len(results), str(exp), str(out))
             )
-            self.assertEqual(exp, out)
+            assert exp == out
 
 
 if __name__ == '__main__':

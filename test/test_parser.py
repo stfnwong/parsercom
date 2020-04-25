@@ -4,15 +4,13 @@ Unit tests for parsers
 
 Stefan Wong 2020
 """
-import unittest
 # units under test
 from parsercom import parser
 
 
-class TestCharParser(unittest.TestCase):
-    def setUp(self) -> None:
-        self.inp_strings_1 = ["", "a", "ab", "acegi", "aaaa", "x"]
-        self.inp_strings_2 = []
+class TestCharParser:
+    inp_strings_1 = ["", "a", "ab", "acegi", "aaaa", "x"]
+    inp_strings_2 = []
 
     def test_parse_char(self) -> None:
         exp_outputs_1 = [
@@ -33,14 +31,13 @@ class TestCharParser(unittest.TestCase):
         for n, o in enumerate(parser_outputs):
             print('Input %d [%s] produced : %s' % (n, self.inp_strings_1[n], str(o)))
 
-        self.assertEqual(len(parser_outputs), len(exp_outputs_1))
+        assert len(parser_outputs) == len(exp_outputs_1)
         for exp_out, test_out in zip(exp_outputs_1, parser_outputs):
-            self.assertEqual(exp_out, test_out)
+            assert  exp_out == test_out
 
 
-class TestStringParser(unittest.TestCase):
-    def setUp(self) -> None:
-        self.inp_strings = ["", "ay", "ayy", "ayayy", "ayyay", "by", "byy", "ayy lmao", "ayylmao"]
+class TestStringParser:
+    inp_strings = ["", "ay", "ayy", "ayayy", "ayyay", "by", "byy", "ayy lmao", "ayylmao"]
 
     def test_parse_strings(self) -> None:
         exp_outputs_2 = [
@@ -65,11 +62,6 @@ class TestStringParser(unittest.TestCase):
         for n, o in enumerate(parser_outputs):
             print('s_parser(%s) produced : %s' % (self.inp_strings[n], str(o)))
 
-        self.assertEqual(len(parser_outputs), len(exp_outputs_2))
+        assert  len(parser_outputs) == len(exp_outputs_2)
         for exp_out, test_out in zip(exp_outputs_2, parser_outputs):
-            self.assertEqual(exp_out, test_out)
-
-
-
-if __name__ == '__main__':
-    unittest.main()
+            assert  exp_out == test_out

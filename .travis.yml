@@ -5,7 +5,8 @@ python:
     - "3.6"
 
 # TODO : flake8/linting, 
+install:
+    - pip install --upgrade pip && pip install -r requirements.txt
 
 script:
-    - python3 test/test_parser.py
-    - python3 test/test_combinator.py
+    - pytest -vv
