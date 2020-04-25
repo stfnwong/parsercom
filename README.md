@@ -1,4 +1,7 @@
 # PARSERCOM
+
+[![Build Status](https://travis-ci.org/stfnwong/parsercom.svg?branch=master)](https://travis-ci.org/stfnwong/parsercom)
+
 I want to know how parser combinators work.
 
 ![*An artists impression of a typical Parser Combinator*](docs/pcom.png)
