@@ -11,7 +11,7 @@ from parsercom import combinator
 from parsercom import parser
 
 
-class TestCombinator(unittest.TestCase):
+class TestAlternation(unittest.TestCase):
     def setUp(self) -> None:
         self.inp_string_1 = "boondoggle"
 
@@ -70,7 +70,7 @@ class TestKleeneStar(unittest.TestCase):
         ks = combinator.KleeneStar(p)
         # expected outputs
         exp_outputs = [
-            parser.ParseResult(0, ''),
+            parser.ParseResult(0, ''), # ''
             parser.ParseResult(0, ''), # 'a'
             parser.ParseResult(0, ''), # 'aa'
             parser.ParseResult(0, ''), # 'aaa'
@@ -103,7 +103,7 @@ class TestKleeneStar(unittest.TestCase):
 
         print('%s results for each string :' % str(ks))
         for n, r in enumerate(results):
-            print(n, r)
+            print(n, r, repr(ks), self.inp_strings[n])
 
         self.assertEqual(len(results), len(exp_outputs))
 

@@ -10,7 +10,7 @@ from parsercom import parser
 #from pudb import set_trace; set_trace()
 
 
-class Combinator:           # TODO : inherit from ABC?
+class Combinator:
     def __init__(self, A:parser.Parser, B:parser.Parser) -> None:
         self.A = A
         self.B = B
@@ -51,24 +51,24 @@ class Concatenation(Combinator):
 class KleeneStar(Combinator):
     def __init__(self, A:parser.Parser) -> None:
         self.A = A
+        self.E = parser.EmptyParser()
 
     def __repr__(self) -> str:
         return 'KleeneStar <%s>' % (repr(self.A))
 
     def parse(self, inp:str, parse_inp:parser.ParseResult=None, idx:int=0) -> parser.ParseResult:
-        empty_result = parser.ParseResult(idx=idx, elem='')
-        result = self.A(inp, parse_inp=parse_inp, idx=idx)
+        #from pudb import set_trace; set_trace()
+        empty_result = self.E(inp, parse_inp=parse_inp, idx=idx)
+        result = self.A(inp, parse_inp=empty_result)
 
-        if result.empty() is True:
-            return empty_result
+        if len(result) == 1:
+            return result
 
-        empty_result.extend(result)
-        result = empty_result
         # run this zero or more times up to unlimited bound
         while True:
             new_result = self.A(inp, result)
-            if new_result.empty():
-                return result
-            result.extend(new_result)
+            if len(new_result) <= len(result):
+                break
+            result = new_result
 
         return result

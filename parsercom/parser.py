@@ -5,6 +5,7 @@ Base class for parsers
 
 Stefan Wong 2020
 """
+import copy
 
 """
 NOTES:
@@ -28,6 +29,9 @@ class ParseResult:
 
     def __str__(self) -> str:
         return self.__repr__()
+
+    def __len__(self) -> int:
+        return len(self.data)
 
     def __eq__(self, other:object) -> bool:
         if isinstance(other, ParseResult):
@@ -61,8 +65,9 @@ class ParseResult:
     def empty(self) -> bool:
         return True if len(self.data) == 0 else False
 
+
 class Parser:
-    def __init__(self, target:str, **kwargs) -> None:
+    def __init__(self, target:str=None, **kwargs) -> None:
         self.target = target
 
     def __repr__(self) -> str:
@@ -89,9 +94,9 @@ class EmptyParser(Parser):
 
     def __call__(self, inp:str, parse_inp:ParseResult=None, idx:int=0) -> ParseResult:
         if parse_inp is not None:
-            return parse_inp
+            return parse_inp.extend(idx, '')
 
-        return ParseResult(idx=idx, elem=None)
+        return ParseResult(idx=idx, elem='')
 
 
 class CharParser(Parser):
@@ -99,7 +104,7 @@ class CharParser(Parser):
         self.target_char = target_char
 
     def __repr__(self) -> str:
-        return 'CharParser(%s)' % self.target_char
+        return 'CharParser(\'%s\')' % self.target_char
 
     def __call__(self, inp:str, parse_inp:ParseResult=None, idx:int=0) -> ParseResult:
         if parse_inp is not None:
@@ -108,20 +113,20 @@ class CharParser(Parser):
         parse_result = ParseResult()
         # Try to match one char
         if idx >= len(inp):
-            return parse_result
+            return parse_inp if parse_inp is not None else parse_result
 
         if inp[idx] == self.target_char:
             parse_result.add(idx + 1, inp[idx])
 
         if parse_inp is not None:
-            return parse_inp.extend(parse_result)
+            parse_out = copy.deepcopy(parse_inp)
+            parse_out.extend(parse_result)
+            return parse_out
 
         return parse_result
 
     def get_target(self) -> str:
         return self.target_char
-
-
 
 
 class StringParser(Parser):
@@ -132,7 +137,7 @@ class StringParser(Parser):
         self.target_str = target_str
 
     def __repr__(self) -> str:
-        return 'StringParser(%s)' % self.target_str
+        return 'StringParser(\'%s\')' % self.target_str
 
     def __call__(self, inp:str, parse_inp:ParseResult=None, idx:int=0) -> ParseResult:
         if parse_inp is not None:
