@@ -22,7 +22,7 @@ class TestAlternation:
             boondoggle_parser
         )
 
-        alt_result = alt_combo.parse(self.inp_string_1)
+        alt_result = alt_combo(self.inp_string_1)
 
         print(alt_combo)
         print(alt_result)
@@ -49,7 +49,7 @@ class TestConcatenation:
 
         results = []
         for inp in self.inp_strings:
-            results.append(ab_combo.parse(inp))
+            results.append(ab_combo(inp))
 
         print('%s results for each string :' % str(ab_combo))
         for n, r in enumerate(results):
@@ -82,13 +82,13 @@ class TestConcatenation:
         exp_ab_result_0.add(2, 'b')
         exp_ab_result_1 = parser.ParseResult()
 
-        a_result = ab_combo.parse('a', idx=0)
+        a_result = ab_combo('a', idx=0)
         assert exp_a_result == a_result
 
-        ab_result_0 = ab_combo.parse('ab', idx=0)
+        ab_result_0 = ab_combo('ab', idx=0)
         assert exp_ab_result_0 == ab_result_0
 
-        ab_result_1 = ab_combo.parse('ab', idx=1)
+        ab_result_1 = ab_combo('ab', idx=1)
         assert exp_ab_result_1 == ab_result_1
 
 
@@ -129,7 +129,7 @@ class TestKleeneStar:
         # Parse the strings
         results = []
         for inp in self.inp_strings:
-            results.append(ks.parse(inp))
+            results.append(ks(inp))
 
         print('%s results for each string :' % str(ks))
         for n, r in enumerate(results):

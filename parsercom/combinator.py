@@ -6,12 +6,18 @@ Stefan Wong 2020
 """
 
 from parsercom import parser
+from typing import Union
 
 #from pudb import set_trace; set_trace()
 
+# TODO : why should this be object-oriented?
+# TODO: also, we actually want to return a new parser from the combinator,
+# which we can then __call__ to parse the input
 
 class Combinator:
-    def __init__(self, A:parser.Parser, B:parser.Parser) -> None:
+    def __init__(self,
+                 A:Union[parser.Parser, 'Combinator'],
+                 B:Union[parser.Parser, 'Combinaor']) -> None:
         self.A = A
         self.B = B
 
@@ -21,16 +27,15 @@ class Combinator:
     def __str__(self) -> str:
         return self.__repr__()
 
-    def parse(self, inp:str, parse_inp:parser.ParseResult=None, idx:int=0) -> parser.ParseResult:
+    def __call__(self, inp:str, parse_inp:parser.ParseResult=None, idx:int=0) -> parser.ParseResult:
         raise NotImplementedError('Should be implemented in derived class')
-
 
 
 class Alternation(Combinator):
     def __repr__(self) -> str:
         return 'Alternation <%s|%s>' % (repr(self.A), repr(self.B))
 
-    def parse(self, inp:str, parse_inp:parser.ParseResult=None, idx:int=0) -> parser.ParseResult:
+    def __call__(self, inp:str, parse_inp:parser.ParseResult=None, idx:int=0) -> parser.ParseResult:
         a_result = self.A(inp, parse_inp=parse_inp, idx=idx)
         b_result = self.B(inp, parse_inp=parse_inp, idx=idx)
 
@@ -43,7 +48,7 @@ class Concatenation(Combinator):
     def __repr__(self) -> str:
         return 'Concatenation <%s.%s>' % (repr(self.A), repr(self.B))
 
-    def parse(self, inp:str, parse_inp:parser.ParseResult=None, idx:int=0) -> parser.ParseResult:
+    def __call__(self, inp:str, parse_inp:parser.ParseResult=None, idx:int=0) -> parser.ParseResult:
         a_result = self.A(inp, parse_inp, idx=idx)
         b_result = self.B(inp, a_result)
 
@@ -58,8 +63,7 @@ class KleeneStar(Combinator):
     def __repr__(self) -> str:
         return 'KleeneStar <%s>' % (repr(self.A))
 
-    def parse(self, inp:str, parse_inp:parser.ParseResult=None, idx:int=0) -> parser.ParseResult:
-        #from pudb import set_trace; set_trace()
+    def __call__(self, inp:str, parse_inp:parser.ParseResult=None, idx:int=0) -> parser.ParseResult:
         empty_result = self.E(inp, parse_inp=parse_inp, idx=idx)
         result = self.A(inp, parse_inp=empty_result)
 
