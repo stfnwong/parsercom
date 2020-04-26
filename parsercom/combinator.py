@@ -10,14 +10,12 @@ from typing import Union
 
 #from pudb import set_trace; set_trace()
 
-# TODO : why should this be object-oriented?
-# TODO: also, we actually want to return a new parser from the combinator,
-# which we can then __call__ to parse the input
+# TODO : how to implement lazy eval?
 
 class Combinator:
     def __init__(self,
                  A:Union[parser.Parser, 'Combinator'],
-                 B:Union[parser.Parser, 'Combinaor']) -> None:
+                 B:Union[parser.Parser, 'Combinator']) -> None:
         self.A = A
         self.B = B
 
@@ -71,10 +69,23 @@ class KleeneStar(Combinator):
             return result
 
         # run this zero or more times up to unlimited bound
+        # TODO : just want to return the complete string, not all the
+        # characters in the string individually
+        #idx = result.last_idx()
+        #from pudb import set_trace; set_trace()
+
+        start_idx = result.last_idx()
+        print('[%s] start_idx = %d' % (repr(self), start_idx))      # TODO : debug, remove
         while True:
-            new_result = self.A(inp, result)
-            if len(new_result) <= len(result):
+            new_result = self.A(inp, idx=result.last_idx())
+            print('[%s] : new_result.last_idx = %d, result.last_idx() = %d' % (repr(self), new_result.last_idx(), result.last_idx()))
+            if new_result.last_idx() <= result.last_idx():
                 break
             result = new_result
 
-        return result
+        parser_out = parser.ParseResult()
+        parser_out.extend(empty_result)
+        parser_out.add(result.last_idx(), inp[start_idx-1 : result.last_idx()])
+        print('[%s] parser_out : %s' % (repr(self), str(parser_out)))
+
+        return parser_out

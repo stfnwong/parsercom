@@ -8,6 +8,53 @@ Stefan Wong 2020
 from parsercom import parser
 
 
+class TestAlphaParser:
+    inp_strings_single = ['', 'a', 'b', '1', '2', '{']
+    #inp_strings_multi  = ['', 'a', 'b', 'ab', 'bb', 'a1', '2a']    # for combinator test...
+
+    def test_inp_string_single(self) -> None:
+        alpha_parser = parser.AlphaParser()
+        exp_outputs = [
+            parser.ParseResult(),         # ''
+            parser.ParseResult(1, 'a'),   # 'a'
+            parser.ParseResult(1, 'b'),   # 'b'
+            parser.ParseResult(),         # '1'
+            parser.ParseResult(),         # '2'
+            parser.ParseResult(),         # '{'
+        ]
+        parser_outputs = []
+        for inp in self.inp_strings_single:
+            parser_outputs.append(alpha_parser(inp))
+
+        assert len(parser_outputs) == len(exp_outputs)
+        for exp_out, test_out in zip(exp_outputs, parser_outputs):
+            assert  exp_out == test_out
+
+
+class TestNumParse:
+    inp_strings_single = ['', '1', '2', 'a', 'b', '{']
+    #inp_strings_multi  = ['', '1', '12', '123']        # TODO : this test is for combinator of NumParser
+
+    def test_inp_string_single(self) -> None:
+        num_parser = parser.NumParser()
+        exp_outputs = [
+            parser.ParseResult(),         # ''
+            parser.ParseResult(1, '1'),   # '1'
+            parser.ParseResult(1, '2'),   # '2'
+            parser.ParseResult(),         # 'a'
+            parser.ParseResult(),         # 'b'
+            parser.ParseResult(),         # '{'
+        ]
+
+        parser_outputs = []
+        for inp in self.inp_strings_single:
+            parser_outputs.append(num_parser(inp))
+
+        assert len(parser_outputs) == len(exp_outputs)
+        for exp_out, test_out in zip(exp_outputs, parser_outputs):
+            assert  exp_out == test_out
+
+
 class TestCharParser:
     inp_strings_1 = ["", "a", "ab", "acegi", "aaaa", "x"]
     inp_strings_2 = []

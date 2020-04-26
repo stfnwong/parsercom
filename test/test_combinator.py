@@ -110,21 +110,13 @@ class TestKleeneStar:
         # 'a'
         exp_outputs[1].add(1, 'a')
         # 'aa'
-        exp_outputs[2].add(1, 'a')
-        exp_outputs[2].add(2, 'a')
+        exp_outputs[2].add(2, 'aa')
         # 'aaa'
-        exp_outputs[3].add(1, 'a')
-        exp_outputs[3].add(2, 'a')
-        exp_outputs[3].add(3, 'a')
+        exp_outputs[3].add(3, 'aaa')
         # 'aaaa'
-        exp_outputs[4].add(1, 'a')
-        exp_outputs[4].add(2, 'a')
-        exp_outputs[4].add(3, 'a')
-        exp_outputs[4].add(4, 'a')
+        exp_outputs[4].add(4, 'aaaa')
         # 'aaabcdef'
-        exp_outputs[5].add(1, 'a')
-        exp_outputs[5].add(2, 'a')
-        exp_outputs[5].add(3, 'a')
+        exp_outputs[5].add(3, 'aaa')
 
         # Parse the strings
         results = []
@@ -144,5 +136,55 @@ class TestKleeneStar:
             assert exp == out
 
 
-if __name__ == '__main__':
-    unittest.main()
+class TestHigherOrderCombinators:
+    inp_strings = ['your mum', 'thisisarunonsentence']
+    inp_strings_word = ['', 'the', 'quick', '0brown', '4fox']
+
+    def test_word_one_or_more_chars(self) -> None:
+        # TODO : actually, we want to be able to get an output like this
+        exp_outputs = [
+            parser.ParseResult(0, ''),
+            parser.ParseResult(0, ''),
+            parser.ParseResult(0, ''),
+            parser.ParseResult(0, ''),
+            parser.ParseResult(0, ''),
+        ]
+        exp_outputs[1].add(3, 'the')
+        exp_outputs[2].add(5, 'quick')
+
+        s_parser = parser.CharParser(' ')
+        z_parser = parser.AlphaParser()
+        z_star  = combinator.KleeneStar(z_parser)
+
+        parser_output = []
+        for inp in self.inp_strings_word:
+            parser_output.append(z_star(inp))
+
+        for n, r in enumerate(parser_output):
+            print(n, r)
+
+        for n, (exp, out) in enumerate(zip(exp_outputs, parser_output)):
+            print("[%d / %d] : comparing %s -> %s" % \
+                  (n, len(parser_output), str(exp), str(out))
+            )
+            assert exp == out
+
+    def test_word_space_word(self) -> None:
+        # Test ZZ* S ZZ*
+        s_parser = parser.CharParser(' ')
+        z_parser = parser.AlphaParser()
+
+        # Make some combinators
+        z_star  = combinator.KleeneStar(z_parser)
+        zz_star = combinator.Concatenation(z_parser, z_star)
+        zzss    = combinator.Concatenation(zz_star, s_parser)
+
+        zzsszz  = combinator.Concatenation(zzss, zz_star)
+
+        parser_output = []
+        for inp in self.inp_strings:
+            parser_output.append(zzsszz(inp))
+
+        for n, r in enumerate(parser_output):
+            print(n, r)
+

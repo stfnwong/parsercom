@@ -112,7 +112,74 @@ class EmptyParser(Parser):
         return ParseResult(idx=idx, elem='')
 
 
+
+class AlphaParser(Parser):
+    """
+    AlphaParser
+    Parses any ASCII character
+    """
+    def __init__(self) -> None:
+        pass
+
+    def __repr__(self) -> str:
+        return 'AlphaParser'
+
+    def __call__(self, inp:str, parse_inp:ParseResult=None, idx:int=0) -> ParseResult:
+        if parse_inp is not None:
+            idx = parse_inp.last_idx()
+
+        if idx < len(inp):
+            if inp[idx].isalpha():
+                if parse_inp is not None:
+                    parse_out = copy.deepcopy(parse_inp)
+                else:
+                    parse_out = ParseResult()
+                parse_out.add(idx+1, inp[idx])
+
+                return parse_out
+
+        if parse_inp is not None:
+            return copy.deepcopy(parse_inp)
+
+        return ParseResult()
+
+
+class NumParser(Parser):
+    """
+    NumParser
+    Parses any number
+    """
+    def __init__(self) -> None:
+        pass
+
+    def __repr__(self) -> str:
+        return 'NumParser'
+
+    def __call__(self, inp:str, parse_inp:ParseResult=None, idx:int=0) -> ParseResult:
+        if parse_inp is not None:
+            idx = parse_inp.last_idx()
+
+        if idx < len(inp):
+            if inp[idx].isdigit():
+                if parse_inp is not None:
+                    parse_out = copy.deepcopy(parse_inp)
+                else:
+                    parse_out = ParseResult()
+                parse_out.add(idx+1, inp[idx])
+
+                return parse_out
+
+        if parse_inp is not None:
+            return copy.deepcopy(parse_inp)
+
+        return ParseResult()
+
+
 class CharParser(Parser):
+    """
+    CharParser
+    Parses any single character
+    """
     def __init__(self, target_char:str) -> None:
         self.target_char = target_char
 
@@ -133,10 +200,11 @@ class CharParser(Parser):
 
         if parse_inp is not None:
             parse_out = copy.deepcopy(parse_inp)
-            parse_out.extend(parse_result)
-            return parse_out
+        else:
+            parse_out = ParseResult()
 
-        return parse_result
+        parse_out.extend(parse_result)
+        return parse_out
 
     def get_target(self) -> str:
         return self.target_char
@@ -145,6 +213,7 @@ class CharParser(Parser):
 class StringParser(Parser):
     """
     StringParser
+    Parses a given string"
     """
     def __init__(self, target_str:str) -> None:
         self.target_str = target_str
