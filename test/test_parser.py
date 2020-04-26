@@ -57,7 +57,6 @@ class TestNumParse:
 
 class TestCharParser:
     inp_strings_1 = ["", "a", "ab", "acegi", "aaaa", "x"]
-    inp_strings_2 = []
 
     def test_parse_char(self) -> None:
         exp_outputs_1 = [
