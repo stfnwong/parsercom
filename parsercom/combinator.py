@@ -8,8 +8,6 @@ Stefan Wong 2020
 from parsercom import parser
 from typing import Union
 
-#from pudb import set_trace; set_trace()
-
 # TODO : how to implement lazy eval?
 
 class Combinator:
@@ -37,9 +35,11 @@ class Alternation(Combinator):
         a_result = self.A(inp, parse_inp=parse_inp, idx=idx)
         b_result = self.B(inp, parse_inp=parse_inp, idx=idx)
 
-        b_result.extend(a_result)
+        parse_out = parser.ParseResult()
+        parse_out.extend(a_result)
+        parse_out.extend(b_result)
 
-        return b_result
+        return parse_out
 
 
 class Concatenation(Combinator):
@@ -69,16 +69,9 @@ class KleeneStar(Combinator):
             return result
 
         # run this zero or more times up to unlimited bound
-        # TODO : just want to return the complete string, not all the
-        # characters in the string individually
-        #idx = result.last_idx()
-        #from pudb import set_trace; set_trace()
-
         start_idx = result.last_idx()
-        print('[%s] start_idx = %d' % (repr(self), start_idx))      # TODO : debug, remove
         while True:
             new_result = self.A(inp, idx=result.last_idx())
-            print('[%s] : new_result.last_idx = %d, result.last_idx() = %d' % (repr(self), new_result.last_idx(), result.last_idx()))
             if new_result.last_idx() <= result.last_idx():
                 break
             result = new_result
@@ -86,6 +79,5 @@ class KleeneStar(Combinator):
         parser_out = parser.ParseResult()
         parser_out.extend(empty_result)
         parser_out.add(result.last_idx(), inp[start_idx-1 : result.last_idx()])
-        print('[%s] parser_out : %s' % (repr(self), str(parser_out)))
 
         return parser_out

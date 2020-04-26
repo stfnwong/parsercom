@@ -17,6 +17,12 @@ class TestAlternation:
         boo_parser = parser.StringParser('boo')
         boondoggle_parser = parser.StringParser('boondoggle')
 
+        exp_outputs = [
+            parser.ParseResult()
+        ]
+        exp_outputs[0].add(3, 'boo')
+        exp_outputs[0].add(10, 'boondoggle')
+
         alt_combo = combinator.Alternation(
             boo_parser,
             boondoggle_parser
@@ -26,6 +32,9 @@ class TestAlternation:
 
         print(alt_combo)
         print(alt_result)
+
+        assert alt_result == exp_outputs[0]
+
 
 
 class TestConcatenation:
