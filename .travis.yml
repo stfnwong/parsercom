@@ -5,6 +5,9 @@ python:
     - "3.6"
 
 # TODO : flake8/linting, 
+before_install:
+    - pip install -U mypy
+
 install:
     - pip install --upgrade pip && pip install -r requirements.txt
     - pip install .
