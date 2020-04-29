@@ -55,6 +55,12 @@ class ParseResult:
             new_elem = (idx, elem)
         self.data.append(new_elem)
 
+    def update(self, idx:int=0, elem:str=None) -> None:
+        if elem is None:
+            self.data[-1] = (idx, '')
+        else:
+            self.data[-1] = (idx, self.data[-1][1] + elem)
+
     def extend(self, result:'ParseResult') -> None:
         self.data.extend(result.data)
 
@@ -63,6 +69,12 @@ class ParseResult:
             return self.data[-1][0]
         except:
             return 0
+
+    def last_str(self) -> str:
+        try:
+            return self.data[-1][1]
+        except:
+            return ''
 
     def empty(self) -> bool:
         return True if len(self.data) == 0 else False
@@ -106,7 +118,7 @@ class EmptyParser(Parser):
     def __call__(self, inp:str, parse_inp:ParseResult=None, idx:int=0) -> ParseResult:
         if parse_inp is not None:
             parse_out = copy.deepcopy(parse_inp)
-            parse_out.add(idx, '')
+            parse_out.add(parse_inp.last_idx(), '')
             return parse_out
 
         return ParseResult(idx=idx, elem='')

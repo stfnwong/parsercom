@@ -36,6 +36,9 @@ class Alternation(Combinator):
         b_result = self.B(inp, parse_inp=parse_inp, idx=idx)
 
         parse_out = parser.ParseResult()
+        if a_result.empty() and b_result.empty():
+            return parse_out
+
         parse_out.extend(a_result)
         parse_out.extend(b_result)
 
@@ -53,14 +56,18 @@ class Concatenation(Combinator):
             start_idx = idx
 
         a_result = self.A(inp, parse_inp, idx=idx)
-        print('[%s] : a_result : %s' % (repr(self), str(a_result)))
         if a_result.empty():
             return a_result
 
         b_result = self.B(inp, a_result)
-        print('[%s] : b_result : %s' % (repr(self), str(b_result)))
+        if b_result.last_idx() <= a_result.last_idx():
+            return parser.ParseResult()
 
-        return b_result
+        parse_out = parser.ParseResult()
+        parse_out.extend(a_result)
+        parse_out.update(b_result.last_idx(), b_result.last_str())
+
+        return parse_out
 
 
 class KleeneStar(Combinator):
@@ -74,7 +81,6 @@ class KleeneStar(Combinator):
 
     def __call__(self, inp:str, parse_inp:parser.ParseResult=None, idx:int=0) -> parser.ParseResult:
         empty_result = self.E(inp, parse_inp=parse_inp, idx=idx)
-        #result = self.A(inp, parse_inp=parse_inp, idx=idx)
         result = self.A(inp, parse_inp=empty_result)
 
         if len(result) == 1:
