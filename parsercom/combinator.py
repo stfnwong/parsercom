@@ -73,8 +73,8 @@ class Concatenation(Combinator):
 class KleeneStar(Combinator):
     def __init__(self, A:parser.Parser, accept_partial=False) -> None:
         self.A = A
-        self.accept_partial = accept_partial
         self.E = parser.EmptyParser()
+        self.accept_partial = accept_partial
 
     def __repr__(self) -> str:
         return 'KleeneStar<%s>' % (repr(self.A))

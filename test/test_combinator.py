@@ -219,7 +219,9 @@ class TestHigherOrderCombinators:
             parser.ParseResult(0, ''),
             parser.ParseResult(0, ''),
             parser.ParseResult(0, ''),
-            parser.ParseResult(0, ''),  # 'jumped2' will not pass through combinator
+            # 'jumped2' will not pass through combinator unless accept_partial
+            # is True
+            parser.ParseResult(0, ''),
         ]
         exp_outputs[1].add(3, 'the')
         exp_outputs[2].add(5, 'quick')
@@ -241,8 +243,34 @@ class TestHigherOrderCombinators:
             )
             assert exp == out
 
-    #def test_word_with_trailing_num(self) -> None:
-    #    pass
+    def test_word_with_trailing_num(self) -> None:
+        exp_outputs = [
+            parser.ParseResult(),
+            parser.ParseResult(3, 'the'),
+            parser.ParseResult(5, 'quick'),
+            parser.ParseResult(),
+            parser.ParseResult(),
+            parser.ParseResult(),
+        ]
+        exp_outputs[5].add(7, 'jumped2')
+
+        z_parser    = parser.AlphaParser()
+        n_parser    = parser.NumParser()
+        word_parser = combinator.KleeneStar(n_parser)
+        trailing_num_parser = combinator.Concatenation(word_parser, n_parser)
+
+        parser_output = []
+        for inp in self.inp_strings_word:
+            parser_output.append(trailing_num_parser(inp))
+
+        for n, r in enumerate(parser_output):
+            print(n, r)
+
+        for n, (exp, out) in enumerate(zip(exp_outputs, parser_output)):
+            print("[%d / %d] : comparing %s -> %s" % \
+                  (n, len(parser_output), str(exp), str(out))
+            )
+            assert exp == out
 
     def test_word_with_leading_num(self) -> None:
         exp_outputs = [
@@ -261,7 +289,6 @@ class TestHigherOrderCombinators:
         word_parser = combinator.KleeneStar(z_parser)
         leading_num_parser = combinator.Concatenation(n_parser, word_parser)
 
-        #from pudb import set_trace; set_trace()
         parser_output = []
         for inp in self.inp_strings_word:
             parser_output.append(leading_num_parser(inp))
