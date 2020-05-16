@@ -11,6 +11,9 @@ from typing import Union
 # TODO : how to implement lazy eval?
 
 class Combinator:
+    """
+    Base class for Combinators
+    """
     def __init__(self,
                  A:Union[parser.Parser, 'Combinator'],
                  B:Union[parser.Parser, 'Combinator']) -> None:
@@ -28,24 +31,32 @@ class Combinator:
 
 
 class Alternation(Combinator):
+    """
+    Alternation Combinator. Implements A || B, where || is
+    the short-circuit OR. That is, the combinator returns the
+    result of parsing A if its non-empty, otherwise it parses
+    B and returns that result whether it is empty or not.
+    """
     def __repr__(self) -> str:
         return 'Alternation<%s|%s>' % (repr(self.A), repr(self.B))
 
     def __call__(self, inp:str, parse_inp:parser.ParseResult=None, idx:int=0) -> parser.ParseResult:
         a_result = self.A(inp, parse_inp=parse_inp, idx=idx)
+
+        if not a_result.empty():
+            return a_result
+
         b_result = self.B(inp, parse_inp=parse_inp, idx=idx)
 
-        parse_out = parser.ParseResult()
-        if a_result.empty() and b_result.empty():
-            return parse_out
-
-        parse_out.extend(a_result)
-        parse_out.extend(b_result)
-
-        return parse_out
+        return b_result
 
 
+# TODO : maybe remove this combinator entirely...
 class Concatenation(Combinator):
+    """
+    Concatenation combinator. Performs the concatenation of A and B.
+    Returns all combinations of
+    """
     def __repr__(self) -> str:
         return 'Concatenation<%s * %s>' % (repr(self.A), repr(self.B))
 
