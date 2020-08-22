@@ -211,7 +211,7 @@ class TestKleeneStar:
 
 
 class TestKleeneDot:
-    #inp_strings_alpha = ('', 'a', 'aa', 'aaa', 'aaaa', 'aaabcdefg')
+    inp_strings_alpha = ('', 'a', 'aa', 'aaa', 'aaaa', 'aaabcdefg')
     inp_strings_num = ('', '1', '2', '12', '122', '122a', 'a112', '1a2')
 
     def test_kleene_dot_num(self) -> None:
@@ -240,7 +240,35 @@ class TestKleeneDot:
 
         assert len(results) == len(exp_outputs)
 
-        #from pudb import set_trace; set_trace()
+        for n, (exp, out) in enumerate(zip(exp_outputs, results)):
+            print("[%d / %d] : comparing %s -> %s" % \
+                  (n, len(results), str(exp), str(out))
+            )
+            assert exp == out
+
+    def test_kleene_dot_char(self) -> None:
+        p = parser.CharParser('a')
+        ks = combinator.KleeneDot(p)
+        # expected outputs
+        exp_outputs = [
+            parser.ParseResult(0, ''),     # ''
+            parser.ParseResult(1, 'a'),    # 'a'
+            parser.ParseResult(2, 'aa'),   # 'aa'
+            parser.ParseResult(3, 'aaa'),  # 'aaa'
+            parser.ParseResult(4, 'aaaa'), # 'aaaa'
+            parser.ParseResult(3, 'aaa'),  # 'aaabcdefg'
+        ]
+
+        # Parse the strings
+        results = []
+        for inp in self.inp_strings_alpha:
+            results.append(ks(inp))
+
+        print('%s results for each string :' % str(ks))
+        for n, r in enumerate(results):
+            print(n, r, repr(ks), self.inp_strings_alpha[n])
+
+        assert len(results) == len(exp_outputs)
 
         for n, (exp, out) in enumerate(zip(exp_outputs, results)):
             print("[%d / %d] : comparing %s -> %s" % \
