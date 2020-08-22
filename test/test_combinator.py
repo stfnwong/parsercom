@@ -102,7 +102,7 @@ class TestKleeneStar:
     inp_strings_alpha = ('', 'a', 'aa', 'aaa', 'aaaa', 'aaabcdefg')
     inp_strings_num = ('', '1', '2', '12', '122', '122a', 'a112', '1a2')
 
-    def test_kleene_start_num(self) -> None:
+    def test_kleene_star_num(self) -> None:
         p = parser.NumParser()
         ks = combinator.KleeneStar(p)
 
@@ -205,6 +205,48 @@ class TestKleeneStar:
         partial_match_result = ks(self.inp_strings_alpha[5])
 
         assert exp_partial_match == partial_match_result
+
+
+
+
+
+class TestKleeneDot:
+    #inp_strings_alpha = ('', 'a', 'aa', 'aaa', 'aaaa', 'aaabcdefg')
+    inp_strings_num = ('', '1', '2', '12', '122', '122a', 'a112', '1a2')
+
+    def test_kleene_dot_num(self) -> None:
+        p = parser.NumParser()
+        ks = combinator.KleeneDot(p)
+
+        exp_outputs = [
+            parser.ParseResult(0, ''), # []
+            parser.ParseResult(1, '1'), # '1'
+            parser.ParseResult(1, '2'), # '2'
+            parser.ParseResult(2, '12'), # '12'
+            parser.ParseResult(3, '122'), # '122'
+            parser.ParseResult(3, '122'), # '122a'
+            parser.ParseResult(0, ''), # 'a112'
+            parser.ParseResult(1, '1'), # '1a2'
+        ]
+
+        # Parse the strings
+        results = []
+        for inp in self.inp_strings_num:
+            results.append(ks(inp))
+
+        print('%s results for each string :' % str(ks))
+        for n, r in enumerate(results):
+            print(n, r, repr(ks), self.inp_strings_num[n])
+
+        assert len(results) == len(exp_outputs)
+
+        #from pudb import set_trace; set_trace()
+
+        for n, (exp, out) in enumerate(zip(exp_outputs, results)):
+            print("[%d / %d] : comparing %s -> %s" % \
+                  (n, len(results), str(exp), str(out))
+            )
+            assert exp == out
 
 
 #class TestHigherOrderCombinators:

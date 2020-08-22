@@ -81,6 +81,7 @@ class Concatenation(Combinator):
         return parse_out
 
 
+# TODO : call method seems a bit complicated...
 class KleeneStar(Combinator):
     def __init__(self, A:parser.Parser, accept_partial=False) -> None:
         self.A = A
@@ -114,5 +115,36 @@ class KleeneStar(Combinator):
             return parser_out
 
         parser_out.add(result.last_idx(), inp[start_idx-1 : result.last_idx()])
+
+        return parser_out
+
+
+class KleeneDot(Combinator):
+    def __init__(self, A: parser.Parser) -> None:
+        self.A = A
+
+    def __repr__(self) -> str:
+        return 'KleeneDot<%s>' % (repr(self.A))
+
+    def __call__(self, inp: str, parse_inp: parser.ParseResult=None, idx: int=0) -> parser.ParseResult:
+        #from pudb import set_trace; set_trace()
+
+        result = parse_inp if parse_inp is not None else parser.ParseResult()
+        start_idx = result.last_idx()
+        # keep parsing more tokens for as long as we can
+        while True:
+            new_result = self.A(inp, idx=result.last_idx())
+            if new_result.empty() or new_result.last_idx() <= result.last_idx():
+                break
+            result = new_result
+
+        parser_out = parser.ParseResult()
+
+        # if we dont accept partial results and haven't consumed the
+        # whole input then return an empty result
+        #if not self.accept_partial and result.last_idx() < len(inp):
+        #    return parser_out
+
+        parser_out.add(result.last_idx(), inp[start_idx : result.last_idx()])
 
         return parser_out
