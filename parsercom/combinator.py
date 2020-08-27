@@ -30,15 +30,15 @@ class Combinator:
         raise NotImplementedError('Should be implemented in derived class')
 
 
-class Alternation(Combinator):
+class OR(Combinator):
     """
-    Alternation Combinator. Implements A || B, where || is
+    OR Combinator. Implements A || B, where || is
     the short-circuit OR. That is, the combinator returns the
     result of parsing A if its non-empty, otherwise it parses
     B and returns that result whether it is empty or not.
     """
     def __repr__(self) -> str:
-        return 'Alternation<%s|%s>' % (repr(self.A), repr(self.B))
+        return 'OR<%s|%s>' % (repr(self.A), repr(self.B))
 
     def __call__(self, inp:str, parse_inp:parser.ParseResult=None, idx:int=0) -> parser.ParseResult:
         a_result = self.A(inp, parse_inp=parse_inp, idx=idx)
@@ -51,27 +51,32 @@ class Alternation(Combinator):
         return b_result
 
 
+# So the way that I am using this parser now is like an AND operator
+# Concat should be the
+
+
 # TODO : maybe remove this combinator entirely...
-class Concatenation(Combinator):
+class AND(Combinator):
     """
-    Concatenation combinator. Performs the concatenation of A and B.
-    Returns all combinations of
+    AND combinator. Performs the concatenation of A and B.
     """
     def __repr__(self) -> str:
-        return 'Concatenation<%s * %s>' % (repr(self.A), repr(self.B))
+        return 'AND<%s * %s>' % (repr(self.A), repr(self.B))
 
     def __call__(self, inp:str, parse_inp:parser.ParseResult=None, idx:int=0) -> parser.ParseResult:
-        if parse_inp is not None:
-            start_idx = parse_inp.last_idx()
-        else:
-            start_idx = idx
+        #if parse_inp is not None:
+        #    start_idx = parse_inp.last_idx()
+        #else:
+        #    start_idx = idx
+
+        start_idx = parse_inp.last_idx() if parse_inp is not None else idx
 
         a_result = self.A(inp, parse_inp, idx=idx)
-        if a_result.empty():
-            return a_result
+        if a_result.empty() or a_result.last_idx() == start_idx:
+            return parser.ParseResult()
 
         b_result = self.B(inp, a_result)
-        if b_result.last_idx() <= a_result.last_idx():
+        if b_result.last_idx() < a_result.last_idx():
             return parser.ParseResult()
 
         parse_out = parser.ParseResult()
@@ -92,6 +97,7 @@ class KleeneStar(Combinator):
         return 'KleeneStar<%s>' % (repr(self.A))
 
     def __call__(self, inp:str, parse_inp:parser.ParseResult=None, idx:int=0) -> parser.ParseResult:
+        # Handle the 'zeroth' time
         empty_result = self.E(inp, parse_inp=parse_inp, idx=idx)
         result = self.A(inp, parse_inp=empty_result)
 
@@ -111,8 +117,8 @@ class KleeneStar(Combinator):
 
         # if we dont accept partial results and haven't consumed the
         # whole input then return an empty result
-        if not self.accept_partial and result.last_idx() < len(inp):
-            return parser_out
+        #if not self.accept_partial and result.last_idx() < len(inp):
+        #    return parser_out
 
         parser_out.add(result.last_idx(), inp[start_idx-1 : result.last_idx()])
 
@@ -120,23 +126,24 @@ class KleeneStar(Combinator):
 
 
 class KleeneDot(Combinator):
-    def __init__(self, A: parser.Parser) -> None:
+    def __init__(self, A: parser.Parser, accept_partial: bool = False) -> None:
         self.A = A
+        self.accept_partial = accept_partial
 
     def __repr__(self) -> str:
         return 'KleeneDot<%s>' % (repr(self.A))
 
     def __call__(self, inp: str, parse_inp: parser.ParseResult=None, idx: int=0) -> parser.ParseResult:
-        #from pudb import set_trace; set_trace()
-
-        result = parse_inp if parse_inp is not None else parser.ParseResult()
-        start_idx = result.last_idx()
+        prev_result = parse_inp if parse_inp is not None else parser.ParseResult()
+        start_idx = prev_result.last_idx()
         # keep parsing more tokens for as long as we can
+        # NOTE: this implementation here seems much more complicated than
+        # it needs to be....
         while True:
-            new_result = self.A(inp, idx=result.last_idx())
-            if new_result.empty() or new_result.last_idx() <= result.last_idx():
+            new_result = self.A(inp, idx=prev_result.last_idx())
+            if new_result.empty() or new_result.last_idx() <= prev_result.last_idx():
                 break
-            result = new_result
+            prev_result = new_result
 
         parser_out = parser.ParseResult()
 
@@ -145,6 +152,6 @@ class KleeneDot(Combinator):
         #if not self.accept_partial and result.last_idx() < len(inp):
         #    return parser_out
 
-        parser_out.add(result.last_idx(), inp[start_idx : result.last_idx()])
+        parser_out.add(prev_result.last_idx(), inp[start_idx : prev_result.last_idx()])
 
         return parser_out

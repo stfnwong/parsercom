@@ -14,13 +14,16 @@ NOTES:
     rather than return some tuple like (status, chars_left) we should
     replace chars_left with an index to where in the stream to find the
     next set of chars. The ParseResult is just the result of parsing.
-    That is to say we don't want to keep making copies of the string all
+    That is, we don't want to keep making copies of the string all
     the time in order to make the ParseResult self contained.
 
     We want to be able to give ParseResults from previous parsers/steps
     to subsequent parsers/steps and have them continue on in some way.
 """
 class ParseResult:
+    """
+    Holds the result of a parse operation.
+    """
     def __init__(self, idx:int=0, elem:str=None) -> None:
         self.data:List[Tuple[int, str]] = list()
         if elem is not None:
@@ -138,8 +141,8 @@ class AlphaParser(Parser):
 
                 return parse_out
 
-        if parse_inp is not None:
-            return copy.deepcopy(parse_inp)
+        #if parse_inp is not None:
+        #    return copy.deepcopy(parse_inp)
 
         return ParseResult()
 
@@ -166,8 +169,8 @@ class NumParser(Parser):
 
                 return parse_out
 
-        if parse_inp is not None:
-            return copy.deepcopy(parse_inp)
+        #if parse_inp is not None:
+        #    return copy.deepcopy(parse_inp)
 
         return ParseResult()
 
