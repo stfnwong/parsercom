@@ -76,7 +76,7 @@ class AND(Combinator):
             return parser.ParseResult()
 
         b_result = self.B(inp, a_result)
-        if b_result.last_idx() < a_result.last_idx():
+        if b_result.last_idx() <= a_result.last_idx():
             return parser.ParseResult()
 
         parse_out = parser.ParseResult()
@@ -96,11 +96,14 @@ class KleeneStar(Combinator):
     def __repr__(self) -> str:
         return 'KleeneStar<%s>' % (repr(self.A))
 
+    # TODO : do we really need to return the empty result here?
     def __call__(self, inp:str, parse_inp:parser.ParseResult=None, idx:int=0) -> parser.ParseResult:
         # Handle the 'zeroth' time
         empty_result = self.E(inp, parse_inp=parse_inp, idx=idx)
         result = self.A(inp, parse_inp=empty_result)
 
+        if len(result) == 0:
+            return empty_result
         if len(result) == 1:
             return result
 

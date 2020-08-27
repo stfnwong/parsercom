@@ -53,6 +53,7 @@ class TestAND:
             parser.ParseResult(2, 'ab'),    # 'aba'
         ]
 
+        #from pudb import set_trace; set_trace()
         results = []
         for inp in self.inp_strings:
             results.append(ab_combo(inp))
@@ -111,18 +112,22 @@ class TestKleeneStar:
             parser.ParseResult(0, ''), # '2'
             parser.ParseResult(0, ''), # '12'
             parser.ParseResult(0, ''), # '122'
-            parser.ParseResult(0, ''),
-            parser.ParseResult(0, ''),
-            parser.ParseResult(0, ''),
+            parser.ParseResult(0, ''), # '122a'
+            parser.ParseResult(0, ''), # 'a112'
+            parser.ParseResult(0, ''), # '1a2'
         ]
-        # 'a'
+        # '1'
         exp_outputs[1].add(1, '1')
-        # 'aa'
+        # '2'
         exp_outputs[2].add(1, '2')
-        # 'aaa'
+        # '12'
         exp_outputs[3].add(2, '12')
-        # 'aaaa'
+        # '122'
         exp_outputs[4].add(3, '122')
+        # '122a'
+        exp_outputs[5].add(3, '122')
+        # '1a2'
+        exp_outputs[7].add(1, '1')  # once we see 'a' we stop
 
         # Parse the strings
         results = []
@@ -140,23 +145,6 @@ class TestKleeneStar:
                   (n, len(results), str(exp), str(out))
             )
             assert exp == out
-
-        # with partial match we should also get '122' from '122a'
-        ks.accept_partial = True
-        exp_outputs[5].add(3, '122')
-        exp_outputs[7].add(1, '1')
-
-        results = []
-        for inp in self.inp_strings_num:
-            results.append(ks(inp))
-        assert len(results) == len(exp_outputs)
-
-        for n, (exp, out) in enumerate(zip(exp_outputs, results)):
-            print("[%d / %d] : comparing %s -> %s" % \
-                  (n, len(results), str(exp), str(out))
-            )
-            assert exp == out
-
 
     def test_kleene_star_char(self) -> None:
         p = parser.CharParser('a')
