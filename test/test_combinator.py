@@ -289,7 +289,6 @@ class TestHigherOrderCombinators:
         z_parser    = parser.AlphaParser()
         word_parser = combinator.KleeneDot(z_parser)
 
-        #from pudb import set_trace; set_trace()
         parser_output = []
         for inp in self.inp_strings_word:
             parser_output.append(word_parser(inp))
@@ -318,15 +317,12 @@ class TestHigherOrderConcat:
             parser.ParseResult(),
             parser.ParseResult(7, 'jumped2'),
         ]
-        #exp_outputs[5].add(7, 'jumped2')
 
         z_parser    = parser.AlphaParser()
         n_parser    = parser.NumParser()
         word_parser = combinator.KleeneDot(z_parser)
         trailing_num_parser = combinator.AND(word_parser, n_parser)
 
-        #parser_output = [trailing_num_parser(inp) for inp in self.inp_strings_word]
-        #from pudb import set_trace; set_trace()
         parser_output = []
         for inp in self.inp_strings_word:
             parser_output.append(trailing_num_parser(inp))
@@ -370,43 +366,41 @@ class TestHigherOrderConcat:
             )
             assert exp == out
 
-#    def test_word_with_or_without_leading_num(self) -> None:
-#        exp_outputs = [
-#            parser.ParseResult(0, ''),
-#            parser.ParseResult(0, ''),
-#            parser.ParseResult(0, ''),
-#            parser.ParseResult(0, ''),
-#            parser.ParseResult(0, ''),
-#        ]
-#        exp_outputs[1].add(3, 'the')
-#        exp_outputs[2].add(5, 'quick')
-#        exp_outputs[3].add(5, '0brown')
-#        exp_outputs[4].add(5, '4fox')
-#
-#        n_parser    = parser.NumParser()
-#        zero_or_more_num_parser  = combinator.KleeneStar(n_parser)
-#        z_parser    = parser.AlphaParser()
-#        word_parser = combinator.KleeneStar(z_parser)
-#        leading_num_parser = combinator.AND(
-#            zero_or_more_num_parser,
-#            word_parser
-#        )
-#
-#        print(leading_num_parser)
-#
-#        parser_output = []
-#        for inp in self.inp_strings_word:
-#            parser_output.append(leading_num_parser(inp))
-#
-#        for n, r in enumerate(parser_output):
-#            print(n, r)
-#
-#        for n, (exp, out) in enumerate(zip(exp_outputs, parser_output)):
-#            print("[%d / %d] : comparing %s -> %s" % \
-#                  (n, len(parser_output), str(exp), str(out))
-#            )
-#            assert exp == out
-#
+    def test_word_with_or_without_leading_num(self) -> None:
+        exp_outputs = [
+            parser.ParseResult(),
+            parser.ParseResult(),
+            parser.ParseResult(),
+            parser.ParseResult(0, ''),
+            parser.ParseResult(0, ''),
+        ]
+        exp_outputs[3].add(6, '0brown')
+        exp_outputs[4].add(4, '4fox')
+
+        n_parser    = parser.NumParser()
+        zero_or_more_num_parser  = combinator.KleeneStar(n_parser)
+        z_parser    = parser.AlphaParser()
+        word_parser = combinator.KleeneStar(z_parser)
+        leading_num_parser = combinator.AND(
+            zero_or_more_num_parser,
+            word_parser
+        )
+
+        print(leading_num_parser)
+
+        parser_output = []
+        for inp in self.inp_strings_word:
+            parser_output.append(leading_num_parser(inp))
+
+        for n, r in enumerate(parser_output):
+            print(n, r)
+
+        for n, (exp, out) in enumerate(zip(exp_outputs, parser_output)):
+            print("[%d / %d] : comparing %s -> %s" % \
+                  (n, len(parser_output), str(exp), str(out))
+            )
+            assert exp == out
+
     #def test_word_space_word(self) -> None:
     #    # Test ZZ* S ZZ*
     #    s_parser = parser.CharParser(' ')
