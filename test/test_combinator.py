@@ -401,21 +401,21 @@ class TestHigherOrderConcat:
             )
             assert exp == out
 
-    #def test_word_space_word(self) -> None:
-    #    # Test ZZ* S ZZ*
-    #    s_parser = parser.CharParser(' ')
-    #    z_parser = parser.AlphaParser()
+    def test_word_space_word(self) -> None:
+        # Test ZZ* S ZZ*
+        s_parser = parser.CharParser(' ')
+        z_parser = parser.AlphaParser()
 
-    #    # Make some combinators
-    #    word_parser            = combinator.KleeneStar(z_parser)
-    #    word_parser            = combinator.AND(z_parser, word_parser)
-    #    word_plus_space_parser = combinator.AND(word_parser, s_parser)
+        # Make some combinators
+        word_parser            = combinator.KleeneStar(z_parser)
+        word_parser            = combinator.AND(z_parser, word_parser)
+        word_plus_space_parser = combinator.AND(word_parser, s_parser)
 
-    #    word_space_word_parser  = combinator.AND(word_plus_space_parser, word_parser)
+        word_space_word_parser  = combinator.AND(word_plus_space_parser, word_parser)
 
-    #    parser_output = []
-    #    for inp in self.inp_strings:
-    #        parser_output.append(word_space_word_parser(inp))
+        parser_output = []
+        for inp in self.inp_strings:
+            parser_output.append(word_space_word_parser(inp))
 
-    #    for n, r in enumerate(parser_output):
-    #        print(n, r)
+        for n, r in enumerate(parser_output):
+            print(n, r)
