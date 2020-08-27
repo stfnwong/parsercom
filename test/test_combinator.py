@@ -340,39 +340,35 @@ class TestHigherOrderConcat:
             )
             assert exp == out
 
+    def test_word_with_leading_num(self) -> None:
+        exp_outputs = [
+            parser.ParseResult(),
+            parser.ParseResult(),
+            parser.ParseResult(),
+            parser.ParseResult(),
+            parser.ParseResult(),
+            parser.ParseResult(),
+        ]
+        exp_outputs[3].add(6, '0brown')
+        exp_outputs[4].add(4, '4fox')
 
+        n_parser    = parser.NumParser()
+        z_parser    = parser.AlphaParser()
+        word_parser = combinator.KleeneStar(z_parser)
+        leading_num_parser = combinator.AND(n_parser, word_parser)
 
+        parser_output = []
+        for inp in self.inp_strings_word:
+            parser_output.append(leading_num_parser(inp))
 
-#
-#    def test_word_with_leading_num(self) -> None:
-#        exp_outputs = [
-#            parser.ParseResult(),
-#            parser.ParseResult(),
-#            parser.ParseResult(),
-#            parser.ParseResult(),
-#            parser.ParseResult(),
-#            parser.ParseResult(),
-#        ]
-#        exp_outputs[3].add(6, '0brown')
-#        exp_outputs[4].add(4, '4fox')
-#
-#        n_parser    = parser.NumParser()
-#        z_parser    = parser.AlphaParser()
-#        word_parser = combinator.KleeneStar(z_parser)
-#        leading_num_parser = combinator.AND(n_parser, word_parser)
-#
-#        parser_output = []
-#        for inp in self.inp_strings_word:
-#            parser_output.append(leading_num_parser(inp))
-#
-#        for n, r in enumerate(parser_output):
-#            print(n, r)
-#
-#        for n, (exp, out) in enumerate(zip(exp_outputs, parser_output)):
-#            print("[%d / %d] : comparing %s -> %s" % \
-#                  (n, len(parser_output), str(exp), str(out))
-#            )
-#            assert exp == out
+        for n, r in enumerate(parser_output):
+            print(n, r)
+
+        for n, (exp, out) in enumerate(zip(exp_outputs, parser_output)):
+            print("[%d / %d] : comparing %s -> %s" % \
+                  (n, len(parser_output), str(exp), str(out))
+            )
+            assert exp == out
 
 #    def test_word_with_or_without_leading_num(self) -> None:
 #        exp_outputs = [
