@@ -83,7 +83,7 @@ class TestCharParser:
 
 
 class TestStringParser:
-    inp_strings = ["", "ay", "ayy", "ayayy", "ayyay", "by", "byy", "ayy lmao", "ayylmao"]
+    inp_strings = ["", "ay", "ayy", "ayayy", "ayyay", "by", "byy", "ayy lmao", "ayylmao", "lmaoayy"]
 
     def test_parse_strings(self) -> None:
         exp_outputs_2 = [
@@ -96,9 +96,38 @@ class TestStringParser:
             parser.ParseResult(),
             parser.ParseResult(3, "ayy"),
             parser.ParseResult(3, "ayy"),
+            parser.ParseResult(),
         ]
 
         s_parser = parser.StringParser('ayy')
+
+        parser_outputs = []
+        for i in self.inp_strings:
+            parser_outputs.append(s_parser(i, idx=0))
+
+        # display
+        for n, o in enumerate(parser_outputs):
+            print('s_parser(%s) produced : %s' % (self.inp_strings[n], str(o)))
+
+        assert  len(parser_outputs) == len(exp_outputs_2)
+        for exp_out, test_out in zip(exp_outputs_2, parser_outputs):
+            assert  exp_out == test_out
+
+    def test_parse_strings_again(self) -> None:
+        exp_outputs_2 = [
+            parser.ParseResult(),
+            parser.ParseResult(),
+            parser.ParseResult(),
+            parser.ParseResult(),
+            parser.ParseResult(),
+            parser.ParseResult(),
+            parser.ParseResult(),
+            parser.ParseResult(),
+            parser.ParseResult(),
+            parser.ParseResult(4, "lmao"),
+        ]
+
+        s_parser = parser.StringParser('lmao')
 
         parser_outputs = []
         for i in self.inp_strings:
