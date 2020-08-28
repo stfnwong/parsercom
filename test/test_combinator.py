@@ -166,6 +166,8 @@ class TestKleeneStar:
         exp_outputs[3].add(3, 'aaa')
         # 'aaaa'
         exp_outputs[4].add(4, 'aaaa')
+        # 'aaabcdefg'
+        exp_outputs[5].add(3, 'aaa')
 
         # Parse the strings
         results = []
