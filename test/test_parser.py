@@ -5,7 +5,13 @@ Unit tests for parsers
 Stefan Wong 2020
 """
 # units under test
-from parsercom import parser
+from parsercom.parser import (
+    ParseResult,
+    AlphaParser,
+    CharParser,
+    NumParser,
+    StringParser
+)
 
 
 class TestAlphaParser:
@@ -13,14 +19,14 @@ class TestAlphaParser:
     #inp_strings_multi  = ['', 'a', 'b', 'ab', 'bb', 'a1', '2a']    # for combinator test...
 
     def test_inp_string_single(self) -> None:
-        alpha_parser = parser.AlphaParser()
+        alpha_parser = AlphaParser()
         exp_outputs = [
-            parser.ParseResult(),         # ''
-            parser.ParseResult(1, 'a'),   # 'a'
-            parser.ParseResult(1, 'b'),   # 'b'
-            parser.ParseResult(),         # '1'
-            parser.ParseResult(),         # '2'
-            parser.ParseResult(),         # '{'
+            ParseResult(),         # ''
+            ParseResult(1, 'a'),   # 'a'
+            ParseResult(1, 'b'),   # 'b'
+            ParseResult(),         # '1'
+            ParseResult(),         # '2'
+            ParseResult(),         # '{'
         ]
         parser_outputs = []
         for inp in self.inp_strings_single:
@@ -36,14 +42,14 @@ class TestNumParse:
     #inp_strings_multi  = ['', '1', '12', '123']        # TODO : this test is for combinator of NumParser
 
     def test_inp_string_single(self) -> None:
-        num_parser = parser.NumParser()
+        num_parser = NumParser()
         exp_outputs = [
-            parser.ParseResult(),         # ''
-            parser.ParseResult(1, '1'),   # '1'
-            parser.ParseResult(1, '2'),   # '2'
-            parser.ParseResult(),         # 'a'
-            parser.ParseResult(),         # 'b'
-            parser.ParseResult(),         # '{'
+            ParseResult(),         # ''
+            ParseResult(1, '1'),   # '1'
+            ParseResult(1, '2'),   # '2'
+            ParseResult(),         # 'a'
+            ParseResult(),         # 'b'
+            ParseResult(),         # '{'
         ]
 
         parser_outputs = []
@@ -60,15 +66,15 @@ class TestCharParser:
 
     def test_parse_char(self) -> None:
         exp_outputs_1 = [
-            parser.ParseResult(),
-            parser.ParseResult(1, self.inp_strings_1[1][0]),
-            parser.ParseResult(1, self.inp_strings_1[2][0]),
-            parser.ParseResult(1, self.inp_strings_1[3][0]),
-            parser.ParseResult(1, self.inp_strings_1[4][0]),
-            parser.ParseResult()
+            ParseResult(),
+            ParseResult(1, self.inp_strings_1[1][0]),
+            ParseResult(1, self.inp_strings_1[2][0]),
+            ParseResult(1, self.inp_strings_1[3][0]),
+            ParseResult(1, self.inp_strings_1[4][0]),
+            ParseResult()
         ]
 
-        cparser = parser.CharParser('a')
+        cparser = CharParser('a')
         parser_outputs = []
         for i in self.inp_strings_1:
             parser_outputs.append(cparser(i, idx=0))
@@ -87,18 +93,18 @@ class TestStringParser:
 
     def test_parse_strings(self) -> None:
         exp_outputs_2 = [
-            parser.ParseResult(),
-            parser.ParseResult(),
-            parser.ParseResult(3, "ayy"),
-            parser.ParseResult(),
-            parser.ParseResult(3, "ayy"),
-            parser.ParseResult(),
-            parser.ParseResult(),
-            parser.ParseResult(3, "ayy"),
-            parser.ParseResult(3, "ayy"),
+            ParseResult(),
+            ParseResult(),
+            ParseResult(3, "ayy"),
+            ParseResult(),
+            ParseResult(3, "ayy"),
+            ParseResult(),
+            ParseResult(),
+            ParseResult(3, "ayy"),
+            ParseResult(3, "ayy"),
         ]
 
-        s_parser = parser.StringParser('ayy')
+        s_parser = StringParser('ayy')
 
         parser_outputs = []
         for i in self.inp_strings:

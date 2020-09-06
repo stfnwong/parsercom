@@ -7,18 +7,26 @@ Stefan Wong 2020
 
 # unit(s) under test
 from parsercom import combinator
-from parsercom import parser
+from parsercom.parser import (
+    ParseResult,
+    Parser,
+    AlphaParser,
+    CharParser,
+    EmptyParser,
+    NumParser,
+    StringParser,
+)
 
 
 class TestOR:
     inp_string_1 = "boondoggle"
 
     def test_alternation(self) -> None:
-        boo_parser = parser.StringParser('boo')
-        boondoggle_parser = parser.StringParser('boondoggle')
+        boo_parser = StringParser('boo')
+        boondoggle_parser = StringParser('boondoggle')
 
         exp_outputs = [
-            parser.ParseResult()
+            ParseResult()
         ]
         exp_outputs[0].add(3, 'boo')
 
@@ -39,18 +47,18 @@ class TestAND:
     inp_strings = ('', 'a', 'ab', 'aa', 'aaa', 'aba')
 
     def test_concatenation(self) -> None:
-        a_parser = parser.CharParser('a')
-        b_parser = parser.CharParser('b')
+        a_parser = CharParser('a')
+        b_parser = CharParser('b')
         # this combinator can recognise 'ab'
         ab_combo = combinator.AND(a_parser, b_parser)
         # expected outputs
         exp_outputs = [
-            parser.ParseResult(),           # ''
-            parser.ParseResult(),           # 'a'
-            parser.ParseResult(2, 'ab'),    # 'ab'
-            parser.ParseResult(),           # 'aa'
-            parser.ParseResult(),           # 'aaa'
-            parser.ParseResult(2, 'ab'),    # 'aba'
+            ParseResult(),           # ''
+            ParseResult(),           # 'a'
+            ParseResult(2, 'ab'),    # 'ab'
+            ParseResult(),           # 'aa'
+            ParseResult(),           # 'aaa'
+            ParseResult(2, 'ab'),    # 'aba'
         ]
 
         #from pudb import set_trace; set_trace()
@@ -71,12 +79,12 @@ class TestAND:
             assert exp == out
 
     def test_ab_concat_offset(self) -> None:
-        a_parser = parser.CharParser('a')
-        b_parser = parser.CharParser('b')
+        a_parser = CharParser('a')
+        b_parser = CharParser('b')
         ab_combo = combinator.AND(a_parser, b_parser)
 
-        exp_a_only = parser.ParseResult(1, 'a')
-        exp_b_only = parser.ParseResult(2, 'b')
+        exp_a_only = ParseResult(1, 'a')
+        exp_b_only = ParseResult(2, 'b')
 
         a_only = a_parser('ab', idx=0)
         assert exp_a_only == a_only
@@ -84,9 +92,9 @@ class TestAND:
         b_only = b_parser('ab', idx=1)
         assert exp_b_only == b_only
 
-        exp_a_result = parser.ParseResult()
-        exp_ab_result_0 = parser.ParseResult(2, 'ab')
-        exp_ab_result_1 = parser.ParseResult()
+        exp_a_result = ParseResult()
+        exp_ab_result_0 = ParseResult(2, 'ab')
+        exp_ab_result_1 = ParseResult()
 
         a_result = ab_combo('a', idx=0)
         assert exp_a_result == a_result
@@ -103,18 +111,18 @@ class TestKleeneStar:
     inp_strings_num = ('', '1', '2', '12', '122', '122a', 'a112', '1a2')
 
     def test_kleene_star_num(self) -> None:
-        p = parser.NumParser()
+        p = NumParser()
         ks = combinator.KleeneStar(p)
 
         exp_outputs = [
-            parser.ParseResult(0, ''), # ''
-            parser.ParseResult(0, ''), # '1'
-            parser.ParseResult(0, ''), # '2'
-            parser.ParseResult(0, ''), # '12'
-            parser.ParseResult(0, ''), # '122'
-            parser.ParseResult(0, ''), # '122a'
-            parser.ParseResult(0, ''), # 'a112'
-            parser.ParseResult(0, ''), # '1a2'
+            ParseResult(0, ''), # ''
+            ParseResult(0, ''), # '1'
+            ParseResult(0, ''), # '2'
+            ParseResult(0, ''), # '12'
+            ParseResult(0, ''), # '122'
+            ParseResult(0, ''), # '122a'
+            ParseResult(0, ''), # 'a112'
+            ParseResult(0, ''), # '1a2'
         ]
         # '1'
         exp_outputs[1].add(1, '1')
@@ -147,16 +155,16 @@ class TestKleeneStar:
             assert exp == out
 
     def test_kleene_star_char(self) -> None:
-        p = parser.CharParser('a')
+        p = CharParser('a')
         ks = combinator.KleeneStar(p)
         # expected outputs
         exp_outputs = [
-            parser.ParseResult(0, ''), # ''
-            parser.ParseResult(0, ''), # 'a'
-            parser.ParseResult(0, ''), # 'aa'
-            parser.ParseResult(0, ''), # 'aaa'
-            parser.ParseResult(0, ''), # 'aaaa'
-            parser.ParseResult(0, ''), # 'aaabcdefg'
+            ParseResult(0, ''), # ''
+            ParseResult(0, ''), # 'a'
+            ParseResult(0, ''), # 'aa'
+            ParseResult(0, ''), # 'aaa'
+            ParseResult(0, ''), # 'aaaa'
+            ParseResult(0, ''), # 'aaabcdefg'
         ]
         # 'a'
         exp_outputs[1].add(1, 'a')
@@ -188,7 +196,7 @@ class TestKleeneStar:
 
         # if we turn on partial match then we should get 'aaa' as the
         # result for the input string 'aaabcdefg'
-        exp_partial_match = parser.ParseResult(0, '')
+        exp_partial_match = ParseResult(0, '')
         exp_partial_match.add(3, 'aaa')
         ks.accept_partial = True
         partial_match_result = ks(self.inp_strings_alpha[5])
@@ -201,18 +209,18 @@ class TestKleeneDot:
     inp_strings_num = ('', '1', '2', '12', '122', '122a', 'a112', '1a2')
 
     def test_kleene_dot_num(self) -> None:
-        p = parser.NumParser()
+        p = NumParser()
         ks = combinator.KleeneDot(p)
 
         exp_outputs = [
-            parser.ParseResult(0, ''), # []
-            parser.ParseResult(1, '1'), # '1'
-            parser.ParseResult(1, '2'), # '2'
-            parser.ParseResult(2, '12'), # '12'
-            parser.ParseResult(3, '122'), # '122'
-            parser.ParseResult(3, '122'), # '122a'
-            parser.ParseResult(0, ''), # 'a112'
-            parser.ParseResult(1, '1'), # '1a2'
+            ParseResult(0, ''), # []
+            ParseResult(1, '1'), # '1'
+            ParseResult(1, '2'), # '2'
+            ParseResult(2, '12'), # '12'
+            ParseResult(3, '122'), # '122'
+            ParseResult(3, '122'), # '122a'
+            ParseResult(0, ''), # 'a112'
+            ParseResult(1, '1'), # '1a2'
         ]
 
         # Parse the strings
@@ -233,16 +241,16 @@ class TestKleeneDot:
             assert exp == out
 
     def test_kleene_dot_char(self) -> None:
-        p = parser.CharParser('a')
+        p = CharParser('a')
         ks = combinator.KleeneDot(p)
         # expected outputs
         exp_outputs = [
-            parser.ParseResult(0, ''),     # ''
-            parser.ParseResult(1, 'a'),    # 'a'
-            parser.ParseResult(2, 'aa'),   # 'aa'
-            parser.ParseResult(3, 'aaa'),  # 'aaa'
-            parser.ParseResult(4, 'aaaa'), # 'aaaa'
-            parser.ParseResult(3, 'aaa'),  # 'aaabcdefg'
+            ParseResult(0, ''),     # ''
+            ParseResult(1, 'a'),    # 'a'
+            ParseResult(2, 'aa'),   # 'aa'
+            ParseResult(3, 'aaa'),  # 'aaa'
+            ParseResult(4, 'aaaa'), # 'aaaa'
+            ParseResult(3, 'aaa'),  # 'aaabcdefg'
         ]
 
         # Parse the strings
@@ -269,14 +277,14 @@ class TestHigherOrderCombinators:
 
     def test_word_one_or_more_chars(self) -> None:
         exp_outputs = [
-            parser.ParseResult(0, ''),
-            parser.ParseResult(3, 'the'),
-            parser.ParseResult(5, 'quick'),
-            parser.ParseResult(0, ''),
-            parser.ParseResult(0, ''),
-            parser.ParseResult(6, 'jumped')
+            ParseResult(0, ''),
+            ParseResult(3, 'the'),
+            ParseResult(5, 'quick'),
+            ParseResult(0, ''),
+            ParseResult(0, ''),
+            ParseResult(6, 'jumped')
         ]
-        z_parser    = parser.AlphaParser()
+        z_parser    = AlphaParser()
         word_parser = combinator.KleeneDot(z_parser)
 
         parser_output = []
@@ -300,16 +308,16 @@ class TestHigherOrderConcat:
     # TODO : unify what the output looks like for the AND and OR combinator
     def test_word_with_trailing_num(self) -> None:
         exp_outputs = [
-            parser.ParseResult(),
-            parser.ParseResult(),
-            parser.ParseResult(),
-            parser.ParseResult(),
-            parser.ParseResult(),
-            parser.ParseResult(7, 'jumped2'),
+            ParseResult(),
+            ParseResult(),
+            ParseResult(),
+            ParseResult(),
+            ParseResult(),
+            ParseResult(7, 'jumped2'),
         ]
 
-        z_parser    = parser.AlphaParser()
-        n_parser    = parser.NumParser()
+        z_parser    = AlphaParser()
+        n_parser    = NumParser()
         word_parser = combinator.KleeneDot(z_parser)
         trailing_num_parser = combinator.AND(word_parser, n_parser)
 
@@ -328,18 +336,18 @@ class TestHigherOrderConcat:
 
     def test_word_with_leading_num(self) -> None:
         exp_outputs = [
-            parser.ParseResult(),
-            parser.ParseResult(),
-            parser.ParseResult(),
-            parser.ParseResult(),
-            parser.ParseResult(),
-            parser.ParseResult(),
+            ParseResult(),
+            ParseResult(),
+            ParseResult(),
+            ParseResult(),
+            ParseResult(),
+            ParseResult(),
         ]
         exp_outputs[3].add(6, '0brown')
         exp_outputs[4].add(4, '4fox')
 
-        n_parser    = parser.NumParser()
-        z_parser    = parser.AlphaParser()
+        n_parser    = NumParser()
+        z_parser    = AlphaParser()
         word_parser = combinator.KleeneStar(z_parser)
         leading_num_parser = combinator.AND(n_parser, word_parser)
 
@@ -358,18 +366,18 @@ class TestHigherOrderConcat:
 
     def test_word_with_or_without_leading_num(self) -> None:
         exp_outputs = [
-            parser.ParseResult(),
-            parser.ParseResult(),
-            parser.ParseResult(),
-            parser.ParseResult(0, ''),
-            parser.ParseResult(0, ''),
+            ParseResult(),
+            ParseResult(),
+            ParseResult(),
+            ParseResult(0, ''),
+            ParseResult(0, ''),
         ]
         exp_outputs[3].add(6, '0brown')
         exp_outputs[4].add(4, '4fox')
 
-        n_parser    = parser.NumParser()
+        n_parser    = NumParser()
         zero_or_more_num_parser  = combinator.KleeneStar(n_parser)
-        z_parser    = parser.AlphaParser()
+        z_parser    = AlphaParser()
         word_parser = combinator.KleeneStar(z_parser)
         leading_num_parser = combinator.AND(
             zero_or_more_num_parser,
@@ -393,8 +401,8 @@ class TestHigherOrderConcat:
 
     def test_word_space_word(self) -> None:
         # Test ZZ* S ZZ*
-        s_parser = parser.CharParser(' ')
-        z_parser = parser.AlphaParser()
+        s_parser = CharParser(' ')
+        z_parser = AlphaParser()
 
         # Make some combinators
         word_parser            = combinator.KleeneStar(z_parser)

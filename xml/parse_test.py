@@ -4,22 +4,21 @@ Attempt to parse some XML
 
 """
 
+from parsercom.parser import ParseResult, Parser
 
-from parsercom import parser
 
-
-class Identifier(parser.Parser):
+class Identifier(Parser):
     def __repr__(self) -> str:
         return 'Identifier(\'%s\')' % str(self.inp_str)
 
-    def __call__(self, inp:str, parse_inp:parser.ParseResult=None, idx:int=0) -> parser.ParseResult:
+    def __call__(self, inp:str, parse_inp:ParseResult=None, idx:int=0) -> ParseResult:
         if parse_inp is not None:
             idx = parse_inp.last_idx()
         else:
             idx = 0
 
         #from pudb import set_trace; set_trace()
-        parse_result = parser.ParseResult()
+        parse_result = ParseResult()
         for target_idx, c in enumerate(inp[idx:]):
             if c.isalpha():
                 continue
