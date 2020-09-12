@@ -8,3 +8,4 @@ dependencies:
   - pudb
   - pytest>=5.4
   - ipython>=7.17
+  - mypy

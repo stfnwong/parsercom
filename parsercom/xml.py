@@ -13,7 +13,7 @@ from parsercom.combinator import Combinator
 
 class Identifier(Parser):
     def __repr__(self) -> str:
-        return "Identifier(\'%s\')" % str(self.inp_str)
+        return "Identifier()"
 
     def __call__(self, inp:str, parse_inp:ParseResult=None, idx:int=0) -> ParseResult:
         if parse_inp is not None:
