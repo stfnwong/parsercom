@@ -1,8 +1,10 @@
 """
-PARSE_TEST
-Attempt to parse some XML
+XML
+Parsers for XML
 
+Stefan Wong 2020
 """
+
 
 from parsercom.parser import ParseResult, Parser
 
@@ -34,19 +36,3 @@ class Identifier(Parser):
 
         return parse_result
 
-
-# Mini test
-if __name__ == "__main__":
-    iden_parser = Identifier()
-
-    # try and parse some identifiers
-    iden1 = "this-is-a-valid-identifier"
-    iden2 = "valid2"
-    iden3 = "0-this-is-invalid-1"
-
-    parse_results = []
-    for iden in (iden1, iden2, iden3):
-        parse_results.append(iden_parser(iden))
-
-    for n, res in enumerate(parse_results):
-        print(n, res)
