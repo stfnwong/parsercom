@@ -69,7 +69,7 @@ class Identifier(Parser):
 
 
 # KleeneDot for characters
-class OneOrMore(Combinator):
+class OneOrMore(Parser):
     def __repr__(self) -> str:
         return "OneOrMore()"
 
@@ -94,7 +94,7 @@ class OneOrMore(Combinator):
 
 
 # KleeneStar for characters
-class ZeroOrMore(Combinator):
+class ZeroOrMore(Parser):
     def __repr__(self) -> str:
         return "ZeroOrMore()"
 
