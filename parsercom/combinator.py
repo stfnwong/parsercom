@@ -15,8 +15,8 @@ class Combinator:
     Base class for Combinators
     """
     def __init__(self,
-                 A:Union[Parser, 'Combinator'],
-                 B:Union[Parser, 'Combinator']) -> None:
+                 A:Union[Parser, 'Combinator']=None,
+                 B:Union[Parser, 'Combinator']=None) -> None:
         self.A = A
         self.B = B
 
@@ -87,6 +87,7 @@ class AND(Combinator):
 
 
 # TODO : call method seems a bit complicated...
+# Zero or more
 class KleeneStar(Combinator):
     def __init__(self, A:Parser, accept_partial=False) -> None:
         self.A = A
@@ -128,6 +129,7 @@ class KleeneStar(Combinator):
         return parser_out
 
 
+# One or more
 class KleeneDot(Combinator):
     def __init__(self, A: Parser, accept_partial: bool = False) -> None:
         self.A = A
