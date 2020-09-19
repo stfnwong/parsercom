@@ -55,7 +55,6 @@ class OR(Combinator):
 # Concat should be the
 
 
-# TODO : maybe remove this combinator entirely...
 class AND(Combinator):
     """
     AND combinator. Performs the concatenation of A and B.
@@ -64,11 +63,6 @@ class AND(Combinator):
         return 'AND<%s * %s>' % (repr(self.A), repr(self.B))
 
     def __call__(self, inp:str, parse_inp:ParseResult=None, idx:int=0) -> ParseResult:
-        #if parse_inp is not None:
-        #    start_idx = parse_inp.last_idx()
-        #else:
-        #    start_idx = idx
-
         start_idx = parse_inp.last_idx() if parse_inp is not None else idx
 
         a_result = self.A(inp, parse_inp, idx=idx)
@@ -84,6 +78,63 @@ class AND(Combinator):
         parse_out.update(b_result.last_idx(), b_result.last_str())
 
         return parse_out
+
+
+# Simpler combinators for One or More and Zero or More
+class OneOrMore(Combinator):
+    """
+    Accepts one or more occurences of the token accepted by A
+    """
+    def __init__(self, A:Parser) -> None:
+        self.A = A
+
+    def __repr__(self) -> str:
+        return 'OneOrMore<%s>' % (repr(self.A))
+
+    def __call__(self, inp:str, parse_inp:ParseResult=None, idx:int=0) -> ParseResult:
+        prev_result = parse_inp if parse_inp is not None else ParseResult()
+        start_idx = prev_result.last_idx()
+
+        while True:
+            new_result = self.A(inp, idx=prev_result.last_idx())
+            if new_result.empty() or new_result.last_idx() <= prev_result.last_idx():
+                break
+            prev_result = new_result
+
+        parser_out = ParseResult()
+        parser_out.add(prev_result.last_idx(), inp[start_idx : prev_result.last_idx()])
+
+        return parser_out
+
+
+class ZeroOrMore(Combinator):
+    """
+    Accepts zero or more occurences of the token accepted by A
+    """
+    def __init__(self, A:Parser) -> None:
+        self.A = A
+
+    def __repr__(self) -> str:
+        return 'ZeroOrMore<%s>' % (repr(self.A))
+
+    def __call__(self, inp:str, parse_inp:ParseResult=None, idx:int=0) -> ParseResult:
+        result = self.A(inp, parse_inp=empty_result)
+
+        if len(result) == 0:
+            return empty_result
+        if len(result) == 1:
+            return result
+
+        # run this zero or more times up to unlimited bound
+        start_idx = result.last_idx()
+        while True:
+            new_result = self.A(inp, idx=result.last_idx())
+            if new_result.last_idx() <= result.last_idx() or new_result.empty():
+                break
+            result = new_result
+
+        parser_out = ParseResult()
+        parser_out.extend(empty_result)
 
 
 # TODO : call method seems a bit complicated...

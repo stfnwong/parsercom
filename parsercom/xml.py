@@ -139,7 +139,6 @@ class Right(Combinator):
         return b_result
 
 
-
 class QuotedString(Combinator):
     #def __init__(self) -> None:
     #    #self.l = Left(

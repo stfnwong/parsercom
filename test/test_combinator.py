@@ -106,6 +106,76 @@ class TestAND:
         assert exp_ab_result_1 == ab_result_1
 
 
+class OneOrMode:
+    inp_strings_alpha = ('', 'a', 'aa', 'aaa', 'aaaa', 'aaabcdefg')
+
+    def test_one_or_more(self) -> None:
+        c = CharParser('a')
+        comb = combinator.OneOrMode(c)
+
+        # expected outputs
+        exp_outputs = [
+            ParseResult(0, ''),     # ''
+            ParseResult(1, 'a'),    # 'a'
+            ParseResult(2, 'aa'),   # 'aa'
+            ParseResult(3, 'aaa'),  # 'aaa'
+            ParseResult(4, 'aaaa'), # 'aaaa'
+            ParseResult(3, 'aaa'),  # 'aaabcdefg'
+        ]
+
+        # Parse the strings
+        results = []
+        for inp in self.inp_strings_num:
+            results.append(comb(inp))
+
+        print('%s results for each string :' % str(ks))
+        for n, r in enumerate(results):
+            print(n, r, repr(comb), self.inp_strings_num[n])
+
+        assert len(results) == len(exp_outputs)
+
+        for n, (exp, out) in enumerate(zip(exp_outputs, results)):
+            print("[%d / %d] : comparing %s -> %s" % \
+                  (n, len(results), str(exp), str(out))
+            )
+            assert exp == out
+
+
+class ZeroOrMore:
+    inp_strings_alpha = ('', 'a', 'aa', 'aaa', 'aaaa', 'aaabcdefg')
+
+    def test_zero_or_more(self) -> None:
+        c = CharParser('a')
+        comb = combinator.ZeroOrMore(c)
+        # expected outputs
+        exp_outputs = [
+            ParseResult(1, ''),     # ''
+            ParseResult(1, 'a'),    # 'a'
+            ParseResult(2, 'aa'),   # 'aa'
+            ParseResult(3, 'aaa'),  # 'aaa'
+            ParseResult(4, 'aaaa'), # 'aaaa'
+            ParseResult(3, 'aaa'),  # 'aaabcdefg'
+        ]
+
+        # Parse the strings
+        results = []
+        for inp in self.inp_strings_num:
+            results.append(comb(inp))
+
+        print('%s results for each string :' % str(ks))
+        for n, r in enumerate(results):
+            print(n, r, repr(comb), self.inp_strings_num[n])
+
+        assert len(results) == len(exp_outputs)
+
+        for n, (exp, out) in enumerate(zip(exp_outputs, results)):
+            print("[%d / %d] : comparing %s -> %s" % \
+                  (n, len(results), str(exp), str(out))
+            )
+            assert exp == out
+
+
+
 class TestKleeneStar:
     inp_strings_alpha = ('', 'a', 'aa', 'aaa', 'aaaa', 'aaabcdefg')
     inp_strings_num = ('', '1', '2', '12', '122', '122a', 'a112', '1a2')
