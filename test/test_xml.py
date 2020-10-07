@@ -97,7 +97,7 @@ class TestQuotedString:
     test_strings = [
         "\"this is a valid quoted string\"",
         "\"this is not a valid quoted string",
-        ""
+        "\"\""      # TODO : is an empty string a valid 'quoted' string?
     ]
 
     def test_quoted_string(self) -> None:
@@ -107,11 +107,10 @@ class TestQuotedString:
             # We don't get the double-quotes in the string since the Left
             # and Right combinators dont return them
             ParseResult(31, "this is a valid quoted string\""),
-            ParseResult(0, []),
-            ParseResult(1, "")
+            ParseResult(),          # NOTE: with AND combinator this will be an empty result ParseResult(0, []),
+            ParseResult(),
         ]
 
-        from pudb import set_trace; set_trace()
         parse_results = []
         for s in self.test_strings:
             parse_results.append(quoted_string(s))

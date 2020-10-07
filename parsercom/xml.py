@@ -13,7 +13,7 @@ from parsercom.parser import (
     AlphaSpaceParser,
     CharParser,
 )
-from parsercom.combinator import Combinator, KleeneStar, KleeneDot, ZeroOrMoreCombinator
+from parsercom.combinator import AND, Combinator, KleeneStar, KleeneDot, ZeroOrMoreCombinator
 
 # TODO : some of these are generic enough that they could be moved into the
 # regular combinator implementation
@@ -106,7 +106,8 @@ class QuotedString(Combinator):
     def __init__(self) -> None:
         self.quote = CharParser("\"")
         self.alpha = AlphaSpaceParser()
-        self.left  = Left(ZeroOrMoreCombinator(self.alpha), self.quote)
+        self.left  = AND(ZeroOrMoreCombinator(self.alpha), self.quote)
+        #self.left  = Left(ZeroOrMoreCombinator(self.alpha), self.quote)
         self.quoted_str = Right(self.quote, self.left)
 
     def __repr__(self) -> str:
