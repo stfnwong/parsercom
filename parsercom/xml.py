@@ -7,8 +7,13 @@ Stefan Wong 2020
 # TODO : note there is lots of boilerplate here...
 
 
-from parsercom.parser import ParseResult, Parser
-from parsercom.combinator import Combinator, KleeneStar, KleeneDot
+from parsercom.parser import (
+    ParseResult,
+    Parser,
+    AlphaSpaceParser,
+    CharParser,
+)
+from parsercom.combinator import Combinator, KleeneStar, KleeneDot, ZeroOrMoreCombinator
 
 # TODO : some of these are generic enough that they could be moved into the
 # regular combinator implementation
@@ -68,53 +73,6 @@ class Identifier(Parser):
         return parse_result
 
 
-# KleeneDot for characters
-class OneOrMore(Parser):
-    def __repr__(self) -> str:
-        return "OneOrMore()"
-
-    def __call__(self, inp:str, parse_inp:ParseResult=None, idx:int=0) -> ParseResult:
-        if parse_inp is not None:
-            idx = parse_inp.last_idx()
-        else:
-            idx = 0
-
-        parse_result = ParseResult()
-        target_idx = 0
-        for target_idx, c in enumerate(inp[idx:]):
-            if not c.isalnum() and not c.isspace():
-                break
-
-        if target_idx == 0:
-            return parse_result
-
-        parse_result.add(idx + target_idx + 1, inp[idx : idx + target_idx+1])
-
-        return parse_result
-
-
-# KleeneStar for characters
-class ZeroOrMore(Parser):
-    def __repr__(self) -> str:
-        return "ZeroOrMore()"
-
-    def __call__(self, inp:str, parse_inp:ParseResult=None, idx:int=0) -> ParseResult:
-        if parse_inp is not None:
-            idx = parse_inp.last_idx()
-        else:
-            idx = 0
-
-        parse_result = ParseResult()
-        target_idx = 0
-        for target_idx, c in enumerate(inp[idx:]):
-            if not c.isalnum() and not c.isspace():
-                break
-
-        parse_result.add(idx + target_idx + 1, inp[idx : idx + target_idx+1])
-
-        return parse_result
-
-
 
 # ======== COMBINATORS ======== #
 class Left(Combinator):
@@ -123,6 +81,8 @@ class Left(Combinator):
 
     def __call__(self, inp:str, parse_inp:ParseResult=None, idx:int=0) -> ParseResult:
         a_result = self.A(inp, parse_inp=parse_inp, idx=idx)
+        if a_result.empty():
+            return a_result
         _ = self.B(inp, parse_inp=a_result, idx=idx)
 
         return a_result
@@ -134,25 +94,34 @@ class Right(Combinator):
 
     def __call__(self, inp:str, parse_inp:ParseResult=None, idx:int=0) -> ParseResult:
         a_result = self.A(inp, parse_inp=parse_inp, idx=idx)
+        if a_result.empty():
+            return a_result
+
         b_result = self.B(inp, parse_inp=a_result, idx=idx)
 
         return b_result
 
 
 class QuotedString(Combinator):
-    #def __init__(self) -> None:
-    #    #self.l = Left(
-    #    pass
+    def __init__(self) -> None:
+        self.quote = CharParser("\"")
+        self.alpha = AlphaSpaceParser()
+        self.left  = Left(ZeroOrMoreCombinator(self.alpha), self.quote)
+        self.quoted_str = Right(self.quote, self.left)
 
     def __repr__(self) -> str:
         return "QuotedString()"
 
     def __call__(self, inp:str, parse_inp:ParseResult=None, idx:int=0) -> ParseResult:
-        a_result = self.A(inp, parse_inp=parse_inp, idx=idx)
+        #from pudb import set_trace; set_trace()
+        result = self.quoted_str(inp, parse_inp=parse_inp, idx=idx)
+        return result
 
-        if not a_result.empty():
-            return a_result
+        #a_result = self.A(inp, parse_inp=parse_inp, idx=idx)
 
-        b_result = self.B(inp, parse_inp=parse_inp, idx=idx)
+        #if not a_result.empty():
+        #    return a_result
 
-        return b_result
+        #b_result = self.B(inp, parse_inp=parse_inp, idx=idx)
+
+        #return b_result

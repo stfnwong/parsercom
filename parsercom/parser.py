@@ -141,8 +141,30 @@ class AlphaParser(Parser):
 
                 return parse_out
 
-        #if parse_inp is not None:
-        #    return copy.deepcopy(parse_inp)
+        return ParseResult()
+
+
+class AlphaSpaceParser(Parser):
+    """
+    AlphaSpaceParser
+    Parses any ASCII character or space
+    """
+    def __repr__(self) -> str:
+        return 'AlphaSpaceParser'
+
+    def __call__(self, inp:str, parse_inp:ParseResult=None, idx:int=0) -> ParseResult:
+        if parse_inp is not None:
+            idx = parse_inp.last_idx()
+
+        if idx < len(inp):
+            if inp[idx].isalpha() or inp[idx].isspace():
+                if parse_inp is not None:
+                    parse_out = copy.deepcopy(parse_inp)
+                else:
+                    parse_out = ParseResult()
+                parse_out.add(idx+1, inp[idx])
+
+                return parse_out
 
         return ParseResult()
 
@@ -250,3 +272,51 @@ class StringParser(Parser):
 
     def get_target(self) -> str:
         return self.target_str
+
+
+
+# KleeneDot for characters
+class OneOrMore(Parser):
+    def __repr__(self) -> str:
+        return "OneOrMore()"
+
+    def __call__(self, inp:str, parse_inp:ParseResult=None, idx:int=0) -> ParseResult:
+        if parse_inp is not None:
+            idx = parse_inp.last_idx()
+        else:
+            idx = 0
+
+        parse_result = ParseResult()
+        target_idx = 0
+        for target_idx, c in enumerate(inp[idx:]):
+            if not c.isalnum() and not c.isspace():
+                break
+
+        if target_idx == 0:
+            return parse_result
+
+        parse_result.add(idx + target_idx + 1, inp[idx : idx + target_idx+1])
+
+        return parse_result
+
+
+# KleeneStar for characters
+class ZeroOrMore(Parser):
+    def __repr__(self) -> str:
+        return "ZeroOrMore()"
+
+    def __call__(self, inp:str, parse_inp:ParseResult=None, idx:int=0) -> ParseResult:
+        if parse_inp is not None:
+            idx = parse_inp.last_idx()
+        else:
+            idx = 0
+
+        parse_result = ParseResult()
+        target_idx = 0
+        for target_idx, c in enumerate(inp[idx:]):
+            if not c.isalnum() and not c.isspace():
+                break
+
+        parse_result.add(idx + target_idx + 1, inp[idx : idx + target_idx+1])
+
+        return parse_result

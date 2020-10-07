@@ -10,7 +10,9 @@ from parsercom.parser import (
     AlphaParser,
     CharParser,
     NumParser,
-    StringParser
+    StringParser,
+    OneOrMore,
+    ZeroOrMore,
 )
 
 
@@ -117,3 +119,55 @@ class TestStringParser:
         assert  len(parser_outputs) == len(exp_outputs_2)
         for exp_out, test_out in zip(exp_outputs_2, parser_outputs):
             assert  exp_out == test_out
+
+
+
+class TestZeroOrMoreParser:
+    other_comb_inputs = [
+        "",
+        "at least one char",
+        "0 or more",
+        "1 or more"
+    ]
+
+    def test_one_or_more(self) -> None:
+        one_or_more = OneOrMore()
+        expected_results = [
+            ParseResult(),
+            ParseResult(17, "at least one char"),
+            ParseResult(9, "0 or more"),
+            ParseResult(9, "1 or more")
+        ]
+
+        parse_results = []
+        for s in self.other_comb_inputs:
+            parse_results.append(one_or_more(s))
+
+        for n, res in enumerate(parse_results):
+            print(n, res)
+
+        assert len(parse_results) == len(expected_results)
+        for res, exp_res in zip(parse_results, expected_results):
+            assert res == exp_res
+
+    def test_zero_or_more(self) -> None:
+        zero_or_more = ZeroOrMore()
+
+        expected_results = [
+            ParseResult(1, ""),
+            ParseResult(17, "at least one char"),
+            ParseResult(9, "0 or more"),
+            ParseResult(9, "1 or more")
+        ]
+
+        parse_results = []
+        for s in self.other_comb_inputs:
+            parse_results.append(zero_or_more(s))
+
+        for n, res in enumerate(parse_results):
+            print(n, res)
+
+        assert len(parse_results) == len(expected_results)
+        for res, exp_res in zip(parse_results, expected_results):
+            assert res == exp_res
+

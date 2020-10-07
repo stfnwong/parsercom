@@ -15,8 +15,6 @@ from parsercom.combinator import (
 # units under test
 from parsercom.xml import (
     Identifier,
-    OneOrMore,
-    ZeroOrMore,
     Left,
     Right,
     QuotedString,
@@ -50,47 +48,6 @@ class TestParsers:
             parse_results.append(iden_parser(iden))
 
         # Display
-        for n, res in enumerate(parse_results):
-            print(n, res)
-
-        assert len(parse_results) == len(expected_results)
-        for res, exp_res in zip(parse_results, expected_results):
-            assert res == exp_res
-
-    def test_one_or_more(self) -> None:
-        one_or_more = OneOrMore()
-        expected_results = [
-            ParseResult(),
-            ParseResult(17, "at least one char"),
-            ParseResult(9, "0 or more"),
-            ParseResult(9, "1 or more")
-        ]
-
-        parse_results = []
-        for s in self.other_comb_inputs:
-            parse_results.append(one_or_more(s))
-
-        for n, res in enumerate(parse_results):
-            print(n, res)
-
-        assert len(parse_results) == len(expected_results)
-        for res, exp_res in zip(parse_results, expected_results):
-            assert res == exp_res
-
-    def test_zero_or_more(self) -> None:
-        zero_or_more = ZeroOrMore()
-
-        expected_results = [
-            ParseResult(1, ""),
-            ParseResult(17, "at least one char"),
-            ParseResult(9, "0 or more"),
-            ParseResult(9, "1 or more")
-        ]
-
-        parse_results = []
-        for s in self.other_comb_inputs:
-            parse_results.append(zero_or_more(s))
-
         for n, res in enumerate(parse_results):
             print(n, res)
 
@@ -137,7 +94,32 @@ class TestCombinators:
 
 
 class TestQuotedString:
-    valid_quoted_string = "\"this is a valid quoted string\""
+    test_strings = [
+        "\"this is a valid quoted string\"",
+        "\"this is not a valid quoted string",
+        ""
+    ]
 
     def test_quoted_string(self) -> None:
         quoted_string = QuotedString()
+
+        expected_results = [
+            # We don't get the double-quotes in the string since the Left
+            # and Right combinators dont return them
+            ParseResult(31, "this is a valid quoted string\""),
+            ParseResult(0, []),
+            ParseResult(1, "")
+        ]
+
+        from pudb import set_trace; set_trace()
+        parse_results = []
+        for s in self.test_strings:
+            parse_results.append(quoted_string(s))
+
+        # Display
+        for n, res in enumerate(parse_results):
+            print(n, res)
+
+        assert len(parse_results) == len(expected_results)
+        for res, exp_res in zip(parse_results, expected_results):
+            assert res == exp_res

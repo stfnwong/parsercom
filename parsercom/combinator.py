@@ -81,7 +81,7 @@ class AND(Combinator):
 
 
 # Simpler combinators for One or More and Zero or More
-class OneOrMore(Combinator):
+class OneOrMoreCombinator(Combinator):
     """
     Accepts one or more occurences of the token accepted by A
     """
@@ -107,7 +107,7 @@ class OneOrMore(Combinator):
         return parser_out
 
 
-class ZeroOrMore(Combinator):
+class ZeroOrMoreCombinator(Combinator):
     """
     Accepts zero or more occurences of the token accepted by A
     """
@@ -118,12 +118,12 @@ class ZeroOrMore(Combinator):
         return 'ZeroOrMore<%s>' % (repr(self.A))
 
     def __call__(self, inp:str, parse_inp:ParseResult=None, idx:int=0) -> ParseResult:
-        result = self.A(inp, parse_inp=empty_result)
+        result = self.A(inp, parse_inp=parse_inp)
 
         if len(result) == 0:
-            return empty_result
-        if len(result) == 1:
             return result
+        #if len(result) == 1:
+        #    return result
 
         # run this zero or more times up to unlimited bound
         start_idx = result.last_idx()
@@ -134,7 +134,9 @@ class ZeroOrMore(Combinator):
             result = new_result
 
         parser_out = ParseResult()
-        parser_out.extend(empty_result)
+        parser_out.add(result.last_idx(), inp[start_idx-1: result.last_idx()])
+
+        return parser_out
 
 
 # TODO : call method seems a bit complicated...
