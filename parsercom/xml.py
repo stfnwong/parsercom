@@ -107,8 +107,9 @@ class QuotedString(Combinator):
         self.quote = CharParser("\"")
         self.alpha = AlphaSpaceParser()
         self.left  = AND(ZeroOrMoreCombinator(self.alpha), self.quote)
+        self.quoted_str = AND(self.quote, self.left)
+        #self.quoted_str = Right(self.quote, self.left)
         #self.left  = Left(ZeroOrMoreCombinator(self.alpha), self.quote)
-        self.quoted_str = Right(self.quote, self.left)
 
     def __repr__(self) -> str:
         return "QuotedString()"

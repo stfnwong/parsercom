@@ -92,7 +92,8 @@ class TestCombinators:
         assert parse_result == expected_result
 
 
-
+# TODO: in general, do we want to keep the leading and trailing quote (I think
+# the answer is yes).
 class TestQuotedString:
     test_strings = [
         "\"this is a valid quoted string\"",
@@ -106,9 +107,10 @@ class TestQuotedString:
         expected_results = [
             # We don't get the double-quotes in the string since the Left
             # and Right combinators dont return them
-            ParseResult(31, "this is a valid quoted string\""),
+            ParseResult(31, "\"this is a valid quoted string\""),
             ParseResult(),          # NOTE: with AND combinator this will be an empty result ParseResult(0, []),
-            ParseResult(),
+            ParseResult()
+            #ParseResult(2, "\"\""),
         ]
 
         parse_results = []
