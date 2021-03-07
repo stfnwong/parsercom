@@ -13,7 +13,7 @@ from parsercom.parser import (
     AlphaSpaceParser,
     CharParser,
 )
-from parsercom.combinator import AND, Combinator, KleeneStar, KleeneDot, ZeroOrMoreCombinator
+from parsercom.combinator import AND, OR, Concat, Combinator, KleeneStar, KleeneDot, ZeroOrMoreCombinator
 
 # TODO : some of these are generic enough that they could be moved into the
 # regular combinator implementation
@@ -106,8 +106,14 @@ class QuotedString(Combinator):
     def __init__(self) -> None:
         self.quote = CharParser("\"")
         self.alpha = AlphaSpaceParser()
-        self.left  = AND(ZeroOrMoreCombinator(self.alpha), self.quote)
-        self.quoted_str = AND(self.quote, self.left)
+        #self.left  = OR(ZeroOrMoreCombinator(self.alpha), self.quote)
+        #self.str_parser  = AND(ZeroOrMoreCombinator(self.alpha), self.quote)
+        self.str_parser = ZeroOrMoreCombinator(self.alpha)
+        self.left_quote = OR(self.quote, self.str_parser)
+
+
+        self.quoted_str = Concat(self.str_parser, self.quote)
+        #self.quoted_str = OR(self.quote, OR(self.str_parser, self.quote))
         #self.quoted_str = Right(self.quote, self.left)
         #self.left  = Left(ZeroOrMoreCombinator(self.alpha), self.quote)
 
@@ -117,6 +123,9 @@ class QuotedString(Combinator):
     def __call__(self, inp:str, parse_inp:ParseResult=None, idx:int=0) -> ParseResult:
         #from pudb import set_trace; set_trace()
         result = self.quoted_str(inp, parse_inp=parse_inp, idx=idx)
+        #result = self.quote(inp, parse_inp=result)
+        #result = self.quote(inp, str_result)
+
         return result
 
         #a_result = self.A(inp, parse_inp=parse_inp, idx=idx)

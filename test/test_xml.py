@@ -109,8 +109,7 @@ class TestQuotedString:
             # and Right combinators dont return them
             ParseResult(31, "\"this is a valid quoted string\""),
             ParseResult(),          # NOTE: with AND combinator this will be an empty result ParseResult(0, []),
-            ParseResult()
-            #ParseResult(2, "\"\""),
+            ParseResult(2, "\"\""),
         ]
 
         parse_results = []
@@ -118,8 +117,9 @@ class TestQuotedString:
             parse_results.append(quoted_string(s))
 
         # Display
+        print("Outputs : ")
         for n, res in enumerate(parse_results):
-            print(n, res)
+            print(n, res, expected_results[n], end='\n')
 
         assert len(parse_results) == len(expected_results)
         for res, exp_res in zip(parse_results, expected_results):

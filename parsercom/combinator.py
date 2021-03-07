@@ -51,8 +51,22 @@ class OR(Combinator):
         return b_result
 
 
-# So the way that I am using this parser now is like an AND operator
-# Concat should be the
+class Concat(Combinator):
+    def __repr__(self) -> str:
+        return 'AND<%s * %s>' % (repr(self.A), repr(self.B))
+
+    def __call__(self, inp:str, parse_inp:ParseResult=None, idx:int=0) -> ParseResult:
+        start_idx = parse_inp.last_idx() if parse_inp is not None else idx
+
+        a_result = self.A(inp, parse_inp, idx=idx)
+        b_result = self.B(inp, a_result)
+        if b_result.last_idx() <= a_result.last_idx():
+            return ParseResult()
+
+        parse_out = ParseResult()
+        parse_out.update(b_result.last_idx(), b_result.last_str())
+
+        return parse_out
 
 
 class AND(Combinator):
