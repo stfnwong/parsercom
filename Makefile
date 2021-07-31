@@ -5,7 +5,7 @@ POETRY_ACTIVATE=$$(source .venv/bin/activate)
 .PHONY: env
 
 clean:
-	@find . -name __pycache__ -exec rm -v {} \;
+	@find . -name '*.pyc' -exec rm -v {} \;
 
 
 env:
